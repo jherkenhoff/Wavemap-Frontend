@@ -1,0 +1,8 @@
+/*******************************
+     User Global Variables
+*******************************/
+
+@teal: #00ccbe;
+
+@primaryColor: @teal;
+@backgroundColor: #1e2e4a;
