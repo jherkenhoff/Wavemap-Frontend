@@ -1,8 +1,8 @@
 {
-  "name": "noise-map",
+  "name": "Visualizer-Frontend",
   "license": "MIT",
   "version": "1.0.0",
-  "description": "Get started with Semantic UI React and Webpack 3",
+  "description": "Frontend for PJET measurement devices",
   "dependencies": {
     "chart.js": "^2.7.3",
     "leaflet": "^1.3.4",

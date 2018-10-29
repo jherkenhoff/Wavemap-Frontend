@@ -1,5 +1,5 @@
 import { combineReducers } from "redux"
-import { UPDATE_DATASETS, UPDATE_DEVICE_INFO, UPDATE_SELECTED_DATASET } from "actions"
+import { UPDATE_DATASETS, UPDATE_DEVICE_INFO, UPDATE_SELECTED_DATASET, UPDATE_MEASUREMENT_RUNNING, CONNECTION_CHANGE, UPDATE_DEVICE_SETUP } from "actions"
 
 function datasets(state = [], action) {
     switch (action.type) {
@@ -11,10 +11,9 @@ function datasets(state = [], action) {
     }
 }
 
-function selectedDataset(state = -1, action) {
+function selectedDataset(state = null, action) {
     switch (action.type) {
         case UPDATE_SELECTED_DATASET:
-            console.log(action)
             return action.selected
 
         default:
@@ -32,10 +31,47 @@ function deviceInfo(state = {}, action) {
     }
 }
 
+function isConnected(state = false, action) {
+    switch (action.type) {
+        case CONNECTION_CHANGE:
+            return action.connected
+
+        default:
+            return state
+    }
+}
+
+function deviceSetup(state = {}, action) {
+    switch (action.type) {
+        case UPDATE_DEVICE_SETUP:
+            return action.deviceSetup
+
+        default:
+            return state
+    }
+}
+
+function measurementStatus(state = {isRunning: false}, action) {
+    switch (action.type) {
+        case UPDATE_MEASUREMENT_RUNNING:
+            return {
+                isRunning: action.running
+            }
+
+        default:
+            return state
+    }
+}
+
+
+
 const rootReducer = combineReducers({
     datasets,
     selectedDataset,
-    deviceInfo
+    deviceInfo,
+    isConnected,
+    deviceSetup,
+    measurementStatus
 })
 
 export default rootReducer

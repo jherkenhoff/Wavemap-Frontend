@@ -3,13 +3,11 @@ import ReactDOM from 'react-dom'
 import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
-import { AppContainer } from 'react-hot-loader'
-import { App } from 'components'
+import { AppContainer as ReactAppContainer } from 'react-hot-loader'
+import { AppContainer } from 'containers'
 import rootReducer from 'reducers'
 import io from 'socket.io-client'
 import setupSocket from 'sockets'
-
-import {getDeviceInfo, getDatasets, getSelectedDataset} from "actions"
 
 import 'styling/semantic.less'
 
@@ -20,22 +18,18 @@ const store = createStore(rootReducer, applyMiddleware(thunk.withExtraArgument(s
 
 setupSocket(socket, store.dispatch)
 
-store.dispatch(getDeviceInfo())
-store.dispatch(getDatasets())
-store.dispatch(getSelectedDataset())
-
 const render = (Component) => {
     ReactDOM.render(
-        <AppContainer>
+        <ReactAppContainer>
             <Provider store={store}>
                 <Component />
             </Provider>
-        </AppContainer>,
+        </ReactAppContainer>,
         document.getElementById('root'),
     )
 }
 
-render(App)
+render(AppContainer)
 if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept('components/App', () => { render(App) })
+  module.hot.accept('containers/AppContainer', () => { render(AppContainer) })
 }

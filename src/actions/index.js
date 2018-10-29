@@ -3,16 +3,12 @@ export const UPDATE_DATASETS = "UPDATE_DATASETS"
 export const UPDATE_SELECTED_DATASET = "UPDATE_SELECTED_DATASET"
 export const ADD_DATASET = "ADD_DATASET"
 export const SELECT_DATASET = "SELECT_DATASET"
+export const CONNECTION_CHANGE = "CONNECTION_CHANGE"
+export const UPDATE_DEVICE_SETUP = "UPDATE_DEVICE_SETUP"
+export const UPDATE_MEASUREMENT_RUNNING = "UPDATE_MEASUREMENT_RUNNING"
 
-/*
- * other constants
- */
 
-export const SamplingModes = {
-    SECONDS: 'SECONDS',
-    METERS: 'METERS',
-    CRAZY: 'CRAZY'
-}
+
 
 /*
  * action creators
@@ -27,6 +23,18 @@ export function updateDatasets(datasets) {
 
 export function updateSelectedDataset(selected) {
     return { type: UPDATE_SELECTED_DATASET, selected }
+}
+
+export function updateDeviceSetup(deviceSetup) {
+    return { type: UPDATE_DEVICE_SETUP, deviceSetup }
+}
+
+export function connectionChange(connected) {
+    return { type: CONNECTION_CHANGE, connected }
+}
+
+export function updateMeasurementRunning(running) {
+    return { type: UPDATE_MEASUREMENT_RUNNING, running }
 }
 
 export function addDataset(name) {
@@ -44,6 +52,18 @@ export function selectDataset(selected) {
 export function getDeviceInfo() {
     return (dispatch, getState, socket) => {
         socket.emit("get_device_info")
+    }
+}
+
+export function getDeviceSetup() {
+    return (dispatch, getState, socket) => {
+        socket.emit("get_device_setup")
+    }
+}
+
+export function changeMeasurementRunning(value) {
+    return (dispatch, getState, socket) => {
+        socket.emit("change_measurement_running", value)
     }
 }
 

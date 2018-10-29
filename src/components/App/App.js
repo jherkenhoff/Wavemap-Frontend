@@ -1,14 +1,16 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { Header, AppLive } from 'components'
+import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import { HeaderContainer, AppLiveContainer, AppMapContainer } from 'containers'
 
 import * as styles from './App.less'
 
-const App = () => (
+const App = (props) => (
     <Router>
         <div className={styles.appRoot}>
-            <Header/>
-            <Route path="/live" exact component={AppLive}/>
+            <Redirect from="/" to="/live"/>
+            <Route path="/" component={HeaderContainer}/>
+            <Route path="/live" exact component={AppLiveContainer}/>
+            <Route path="/map" exact component={AppMapContainer}/>
         </div>
     </Router>
 )

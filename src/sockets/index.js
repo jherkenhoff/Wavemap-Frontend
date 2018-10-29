@@ -1,6 +1,19 @@
-import { updateDeviceInfo, updateDatasets, updateSelectedDataset } from "actions"
+import { updateDeviceInfo, updateDatasets, updateSelectedDataset, connectionChange, getDeviceInfo, getDatasets, getSelectedDataset, getDeviceSetup, updateDeviceSetup, updateMeasurementRunning } from "actions"
 
 export default function setupSocket(socket, dispatch) {
+
+    socket.on("connect", () => {
+        dispatch(getDeviceInfo())
+        dispatch(getDatasets())
+        dispatch(getSelectedDataset())
+        dispatch(getDeviceSetup())
+
+        dispatch(connectionChange(true))
+    })
+
+    socket.on("disconnect", () => {
+        dispatch(connectionChange(false))
+    })
 
     socket.on("update_device_info", (msg) => {
         dispatch(updateDeviceInfo(msg))
@@ -13,5 +26,15 @@ export default function setupSocket(socket, dispatch) {
     socket.on("update_selected_dataset", (msg) => {
         dispatch(updateSelectedDataset(msg))
     })
+
+    socket.on("update_device_setup", (msg) => {
+        dispatch(updateDeviceSetup(msg))
+    })
+
+    socket.on("update_measurement_running", (running) => {
+        dispatch(updateMeasurementRunning(running))
+    })
+
+
 
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Segment, Header, Table, Popup, Divider, Form, Button, Dropdown, Icon, Input, Label, Checkbox } from 'semantic-ui-react'
+import { Segment, Header, Table, Loader, Popup, Divider, Placeholder, Form, Button, Dropdown, Icon, Input, Label, Checkbox } from 'semantic-ui-react'
 
 import * as styles from './LiveSetup.less'
 
@@ -9,16 +9,40 @@ const intervalOptions = [
   { key: 'seconds', text: 'seconds', value: 'seconds' }
 ]
 
+function formatFrequencyRange(freqRange) {
+
+    if (freqRange === undefined) return
+
+    function formatSiPrefix(num) {
+        if (num >= 1e9) { return num/1e9 + " GHz" }
+        else if (num >= 1e6) { return num/1e6 + " MHz" }
+        else if (num >= 1e3) { return num/1e3 + " kHz" }
+        else { return num }
+    }
+
+    return formatSiPrefix(freqRange.lower) + " - " + formatSiPrefix(freqRange.upper)
+}
+
 
 const LiveSetup = (props) => {
+
+    var segmentColor
+    if (!props.isConnected) {
+        segmentColor="orange"
+    } else if (props.isRunning) {
+        segmentColor="green"
+    }
 
     var datasets = props.datasets.map(entry => {return {key: entry.id, text: entry.name, value: entry.id}})
 
     return (
-        <Segment className={styles.liveSetupSegment}>
+        <Segment className={styles.liveSetupSegment} color={segmentColor}>
             <div className={styles.topAligned}>
                 <Header as="h3">Device
-                    <Label color='yellow' >{props.deviceInfo.name}</Label></Header>
+                    <Label color={props.isConnected? "yellow":"red"} >
+                        {props.isConnected? props.deviceInfo.name:"Disconnected"}
+                    </Label>
+                </Header>
                 <Table basic="very">
                     <Table.Row>
                         <Table.Cell collapsing>Version</Table.Cell>
@@ -26,7 +50,7 @@ const LiveSetup = (props) => {
                     </Table.Row>
                     <Table.Row>
                         <Table.Cell collapsing>Frequency range</Table.Cell>
-                        <Table.Cell>50 MHz - 2 GHz</Table.Cell>
+                        <Table.Cell>{formatFrequencyRange(props.deviceInfo.frequency_range)}</Table.Cell>
                     </Table.Row>
                     <Table.Row>
                         <Table.Cell collapsing>Frequency bins</Table.Cell>
@@ -43,6 +67,7 @@ const LiveSetup = (props) => {
                         <Dropdown
                             placeholder="Select/create Dataset"
                             search
+                            disabled={!props.isConnected || props.isRunning}
                             selection
                             fluid
                             options={datasets}
@@ -57,12 +82,16 @@ const LiveSetup = (props) => {
                     <Form.Group grouped>
                         <Form.Field>
                             <label>Sampling interval</label>
-                            <Popup trigger={<Checkbox toggle label="Crazy mode" />} content="Take samples as fast as possible" />
+                            <Popup
+                                trigger={<Checkbox toggle onChange={console.log} label="Crazy mode"
+                                    disabled={!props.isConnected || props.isRunning}/>}
+                                content="Take samples as fast as possible"/>
 
                         </Form.Field>
                         <Form.Field>
                             <Input
                                 fluid
+                                disabled={!props.isConnected || props.isRunning}
                                 label={<Dropdown defaultValue="seconds" options={intervalOptions} />}
                                 labelPosition="right"
                                 placeholder='Enter interval'
@@ -76,9 +105,12 @@ const LiveSetup = (props) => {
             </div>
 
             <Button.Group fluid className={styles.buttonGroup}>
-                <Button>Single</Button>
+                <Button disabled={!props.isConnected || props.isRunning || (props.selectedDataset == null)}>Single</Button>
                 <Button.Or />
-                <Button positive>Run</Button>
+                <Button color={props.isRunning? "red":"green"} disabled={!props.isConnected || (props.selectedDataset == null)}
+                    onClick={() => props.changeMeasurementRunning(!props.isRunning)}>
+                    {props.isRunning? "Stop":"Run"}
+                </Button>
             </Button.Group>
         </Segment>
     )
