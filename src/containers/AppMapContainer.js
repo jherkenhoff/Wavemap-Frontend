@@ -4,22 +4,12 @@ import { addDataset, selectDataset } from 'actions'
 
 const mapStateToProps = state => {
     return {
-        deviceInfo: state.deviceInfo,
-        datasets: state.datasets,
-        isConnected: state.isConnected,
-        selectedDataset: state.selectedDataset,
-        deviceSetup: state.deviceSetup
+        filters: state.mapState.filters
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddDataset: (e, {value}) => {
-            dispatch(addDataset(value))
-        },
-        onSelectDataset: (e, {value}) => {
-            dispatch(selectDataset(value))
-        },
     }
 }
 

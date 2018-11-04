@@ -1,7 +1,6 @@
 import React from 'react'
 import { Grid } from 'semantic-ui-react'
-import { DataTable, MapPreview, LiveSpectrum, Statistics } from 'components'
-import { LiveSetupContainer } from 'containers'
+import { DataTable, MapPreview, LiveSpectrum, Statistics, LiveSetup } from 'components'
 
 import * as styles from './AppLive.less'
 
@@ -10,7 +9,17 @@ const AppLive = (props) => (
     <Grid padded className={styles.grid} stackable stretched>
         <Grid.Row>
             <Grid.Column width={4}>
-                <LiveSetupContainer/>
+                <LiveSetup
+                    deviceInfo={props.deviceInfo}
+                    datasets={props.datasets}
+                    isConnected={props.isConnected}
+                    selectedDataset={props.selectedDataset}
+                    deviceSetup={props.deviceSetup}
+                    isRunning={props.measurementStatus.isRunning}
+                    onAddDataset={props.handleAddDataset}
+                    onSelectDataset={props.handleSelectDataset}
+                    onChangeMeasurementRunning={props.handleChangeMeasurementRunning}
+                />
             </Grid.Column>
             <Grid.Column width={6} >
                 <Statistics/>

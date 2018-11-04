@@ -1,26 +1,30 @@
 import { connect } from 'react-redux'
 import { AppLive } from 'components'
-import { addDataset, selectDataset, measurementControl } from 'actions'
+import { addDataset, selectDataset, changeMeasurementRunning } from 'actions'
 
 const mapStateToProps = state => {
+    var liveState = state.liveState
     return {
-        deviceInfo: state.deviceInfo,
-        datasets: state.datasets,
-        isConnected: state.isConnected,
-        selectedDataset: state.selectedDataset,
-        deviceSetup: state.deviceSetup,
-        measurementStatus: state.measurementStatus
+        deviceInfo: liveState.deviceInfo,
+        datasets: liveState.datasets,
+        isConnected: liveState.isConnected,
+        selectedDataset: liveState.selectedDataset,
+        deviceSetup: liveState.deviceSetup,
+        measurementStatus: liveState.measurementStatus
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddDataset: (e, {value}) => {
+        handleAddDataset: (e, {value}) => {
             dispatch(addDataset(value))
         },
-        onSelectDataset: (e, {value}) => {
+        handleSelectDataset: (e, {value}) => {
             dispatch(selectDataset(value))
         },
+        handleChangeMeasurementRunning: (value) => {
+            dispatch(changeMeasurementRunning(value))
+        }
     }
 }
 

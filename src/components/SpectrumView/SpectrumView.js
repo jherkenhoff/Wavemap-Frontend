@@ -1,6 +1,6 @@
 import React from 'react'
 import { Segment, Header } from 'semantic-ui-react'
-import { Brush, ReferenceLine, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Area, AreaChart, ResponsiveContainer } from 'recharts';
+import { Brush, ReferenceLine, XAxis, YAxis, ReferenceArea, CartesianGrid, Tooltip, Legend, Area, AreaChart, ResponsiveContainer } from 'recharts';
 
 import * as styles from './SpectrumView.less'
 
@@ -43,7 +43,9 @@ const SpectrumView = (props) => (
                     stroke="#888"/>
                 <YAxis allowDecimals={false}/>
                 <Tooltip/>
+                <ReferenceArea x1={data[150].freq} x2={data[180].freq}/>
                 <Area type="monotone" unit=" dBm" name="Mag" dataKey="mag" stroke='#111111' fill='#ffc658' fillOpacity={0.3}/>
+
             </AreaChart>
         </ResponsiveContainer>
     </Segment>

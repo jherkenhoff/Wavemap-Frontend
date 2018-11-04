@@ -43,6 +43,7 @@ const LiveSetup = (props) => {
                         {props.isConnected? props.deviceInfo.name:"Disconnected"}
                     </Label>
                 </Header>
+
                 <Table basic="very">
                     <Table.Row>
                         <Table.Cell collapsing>Version</Table.Cell>
@@ -108,7 +109,7 @@ const LiveSetup = (props) => {
                 <Button disabled={!props.isConnected || props.isRunning || (props.selectedDataset == null)}>Single</Button>
                 <Button.Or />
                 <Button color={props.isRunning? "red":"green"} disabled={!props.isConnected || (props.selectedDataset == null)}
-                    onClick={() => props.changeMeasurementRunning(!props.isRunning)}>
+                    onClick={() => props.onChangeMeasurementRunning(!props.isRunning)}>
                     {props.isRunning? "Stop":"Run"}
                 </Button>
             </Button.Group>

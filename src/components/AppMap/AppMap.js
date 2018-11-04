@@ -12,7 +12,7 @@ const AppMap = (props) => (
             </Grid.Column>
             <Grid.Column width={5}>
                 <SpectrumView/>
-                <MapSetup datasets={props.datasets}/>
+                <MapSetup filters={props.filters}/>
             </Grid.Column>
         </Grid.Row>
     </Grid>
