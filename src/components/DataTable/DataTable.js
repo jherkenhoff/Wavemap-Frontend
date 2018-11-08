@@ -14,6 +14,15 @@ const DataTable = (props) => {
         segmentColor="green"
     }
 
+    var tableEntries = props.liveSamples.map( (sample, idx) => (
+        <Table.Row textAlign="right" key={idx}>
+            <Table.Cell textAlign="left">{sample.id}</Table.Cell>
+            <Table.Cell>{sample.time}</Table.Cell>
+            <Table.Cell>{sample.location.accuracy.toFixed(1) + " m"}</Table.Cell>
+            <Table.Cell>{sample.rf_power}</Table.Cell>
+        </Table.Row>
+    ))
+
     return (
         <Segment color={segmentColor}>
             <Header as="h3">Data table</Header>
@@ -24,94 +33,10 @@ const DataTable = (props) => {
                         <Table.HeaderCell>Time</Table.HeaderCell>
                         <Table.HeaderCell>GPS Accuracy</Table.HeaderCell>
                         <Table.HeaderCell>RF Power</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="center">Note</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    <Table.Row textAlign="right">
-                        <Table.Cell textAlign="left">0</Table.Cell>
-                        <Table.Cell>22:57:52</Table.Cell>
-                        <Table.Cell>12 m</Table.Cell>
-                        <Table.Cell>-75 dBm</Table.Cell>
-                        <Table.Cell textAlign="center">
-                            <Popup
-                                trigger={<Icon link name="sticky note outline"/>}
-                                on="click"
-                                position="right center"
-                            >
-                                <Popup.Header>Datapoint note</Popup.Header>
-                                <Popup.Content>
-                                    <Form>
-                                        <Form.Field>
-                                            <TextArea autoHeight placeholder="Enter note"/>
-                                        </Form.Field>
-                                        <Form.Field className={styles.popupButtonField}>
-                                            <Button.Group>
-                                                <Button disabled icon="trash alternate"/>
-                                                <Button color="green" icon="check"/>
-                                            </Button.Group>
-                                        </Form.Field>
-                                    </Form>
-                                </Popup.Content>
-                            </Popup>
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row textAlign="right">
-                        <Table.Cell textAlign="left">1</Table.Cell>
-                        <Table.Cell>22:59:12</Table.Cell>
-                        <Table.Cell>13 m</Table.Cell>
-                        <Table.Cell>-82 dBm</Table.Cell>
-                        <Table.Cell textAlign="center">
-                            <Popup
-                                trigger={<Icon link color="green" name="sticky note"/>}
-                                on="click"
-                                position="right center"
-                            >
-                                <Popup.Header>Datapoint note</Popup.Header>
-                                <Popup.Content>
-                                    <Form>
-                                        <Form.Field>
-                                            <TextArea autoHeight placeholder="Enter note" value="Loose antenna connection"/>
-                                        </Form.Field>
-                                        <Form.Field className={styles.popupButtonField}>
-                                            <Button.Group>
-                                                <Button icon="trash alternate"/>
-                                                <Button color="green" icon="check"/>
-                                            </Button.Group>
-                                        </Form.Field>
-                                    </Form>
-                                </Popup.Content>
-                            </Popup>
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row textAlign="right">
-                        <Table.Cell textAlign="left">2</Table.Cell>
-                        <Table.Cell>23:07:43</Table.Cell>
-                        <Table.Cell>20 m</Table.Cell>
-                        <Table.Cell>-61 dBm</Table.Cell>
-                        <Table.Cell textAlign="center">
-                            <Popup
-                                trigger={<Icon link name="sticky note outline"/>}
-                                on="click"
-                                position="right center"
-                            >
-                                <Popup.Header>Datapoint note</Popup.Header>
-                                <Popup.Content>
-                                    <Form>
-                                        <Form.Field>
-                                            <TextArea autoHeight placeholder="Enter note"/>
-                                        </Form.Field>
-                                        <Form.Field className={styles.popupButtonField}>
-                                            <Button.Group>
-                                                <Button disabled icon="trash alternate"/>
-                                                <Button color="green" icon="check"/>
-                                            </Button.Group>
-                                        </Form.Field>
-                                    </Form>
-                                </Popup.Content>
-                            </Popup>
-                        </Table.Cell>
-                    </Table.Row>
+                    {tableEntries}
                 </Table.Body>
             </Table>
         </Segment>

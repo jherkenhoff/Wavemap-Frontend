@@ -45,18 +45,20 @@ const LiveSetup = (props) => {
                 </Header>
 
                 <Table basic="very">
-                    <Table.Row>
-                        <Table.Cell collapsing>Version</Table.Cell>
-                        <Table.Cell>{props.deviceInfo.version}</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell collapsing>Frequency range</Table.Cell>
-                        <Table.Cell>{formatFrequencyRange(props.deviceInfo.frequency_range)}</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell collapsing>Frequency bins</Table.Cell>
-                        <Table.Cell>{props.deviceInfo.frequency_bins}</Table.Cell>
-                    </Table.Row>
+                    <Table.Body>
+                        <Table.Row>
+                            <Table.Cell collapsing>Version</Table.Cell>
+                            <Table.Cell>{props.deviceInfo.version}</Table.Cell>
+                        </Table.Row>
+                        <Table.Row>
+                            <Table.Cell collapsing>Frequency range</Table.Cell>
+                            <Table.Cell>{formatFrequencyRange(props.deviceInfo.frequency_range)}</Table.Cell>
+                        </Table.Row>
+                        <Table.Row>
+                            <Table.Cell collapsing>Frequency bins</Table.Cell>
+                            <Table.Cell>{props.deviceInfo.frequency_bins}</Table.Cell>
+                        </Table.Row>
+                    </Table.Body>
                 </Table>
 
                 <Divider/>
@@ -72,7 +74,7 @@ const LiveSetup = (props) => {
                             selection
                             fluid
                             options={datasets}
-                            noResultsMessage={<span>No datasets available.<br/>Start typing to create a new one</span>}
+                            noResultsMessage="No datasets available"
                             allowAdditions
                             value={props.selectedDataset}
                             onAddItem={props.onAddDataset}
@@ -106,7 +108,11 @@ const LiveSetup = (props) => {
             </div>
 
             <Button.Group fluid className={styles.buttonGroup}>
-                <Button disabled={!props.isConnected || props.isRunning || (props.selectedDataset == null)}>Single</Button>
+                <Button
+                    disabled={!props.isConnected || props.isRunning || (props.selectedDataset == null)}
+                    onClick={props.handleStartSingleSample}>
+                    Single
+                </Button>
                 <Button.Or />
                 <Button color={props.isRunning? "red":"green"} disabled={!props.isConnected || (props.selectedDataset == null)}
                     onClick={() => props.onChangeMeasurementRunning(!props.isRunning)}>

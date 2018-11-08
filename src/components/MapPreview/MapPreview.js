@@ -1,6 +1,5 @@
 import React, { Component } from "react"
-import { Map, TileLayer, Marker } from "react-leaflet"
-import { BarChart, Bar, Brush, ReferenceLine, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Area, AreaChart } from 'recharts';
+import { Map, TileLayer, Marker, Circle } from "react-leaflet"
 import { Header, Menu, Dropdown, Icon, Label, Segment } from 'semantic-ui-react'
 import * as styles from "./MapPreview.less"
 
@@ -16,6 +15,14 @@ const MapPreview = (props) => {
         segmentColor="green"
     }
 
+    var liveMarker = undefined
+    var liveCircle = undefined
+    if (props.liveSamples.length > 0) {
+        var location = props.liveSamples[props.liveSamples.length - 1].location
+        liveMarker = <Marker position={[location.lat, location.lon]}/>
+        liveCircle = <Circle center={[location.lat, location.lon]} radius={location.accuracy}/>
+    }
+
     return (
         <Segment className={styles.mapSegment} color={segmentColor}>
             <Header as="h3">Map preview</Header>
@@ -26,7 +33,8 @@ const MapPreview = (props) => {
                   opacity={0.8}
                 />
 
-                <Marker position={[53.071609, 8.793310]}/>
+                {liveMarker}
+                {liveCircle}
             </Map>
         </Segment>
     )

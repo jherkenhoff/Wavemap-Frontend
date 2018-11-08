@@ -1,4 +1,4 @@
-import { UPDATE_DATASETS, UPDATE_DEVICE_INFO, UPDATE_SELECTED_DATASET, UPDATE_MEASUREMENT_RUNNING, CONNECTION_CHANGE, UPDATE_DEVICE_SETUP } from "actions"
+import { UPDATE_DATASETS, UPDATE_DEVICE_INFO, UPDATE_SELECTED_DATASET, UPDATE_MEASUREMENT_RUNNING, CONNECTION_CHANGE, UPDATE_DEVICE_SETUP, NEW_SAMPLE } from "actions"
 
 const initialState = {
     datasets: [],
@@ -8,7 +8,8 @@ const initialState = {
     deviceSetup: {},
     measurementStatus: {
         isRunning: false
-    }
+    },
+    liveSamples: []
 }
 
 export default function liveReducer(state = initialState, action) {
@@ -34,6 +35,11 @@ export default function liveReducer(state = initialState, action) {
                     ...state.measurementStatus, isRunning: action.running
                 }
             }
+
+        case NEW_SAMPLE:
+            return { ...state, liveSamples: [
+                ...state.liveSamples, action.sample
+            ]}
 
         default:
             return state

@@ -6,6 +6,7 @@ export const SELECT_DATASET = "SELECT_DATASET"
 export const CONNECTION_CHANGE = "CONNECTION_CHANGE"
 export const UPDATE_DEVICE_SETUP = "UPDATE_DEVICE_SETUP"
 export const UPDATE_MEASUREMENT_RUNNING = "UPDATE_MEASUREMENT_RUNNING"
+export const NEW_SAMPLE = "NEW_SAMPLE"
 
 
 /*
@@ -33,6 +34,16 @@ export function connectionChange(isConnected) {
 
 export function updateMeasurementRunning(running) {
     return { type: UPDATE_MEASUREMENT_RUNNING, running }
+}
+
+export function newSample(sample) {
+    return { type: NEW_SAMPLE, sample }
+}
+
+export function startSingleSample() {
+    return (dispatch, getState, socket) => {
+        socket.emit("start_single_sample")
+    }
 }
 
 export function addDataset(name) {

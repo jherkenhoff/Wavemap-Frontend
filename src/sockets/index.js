@@ -1,4 +1,4 @@
-import { updateDeviceInfo, updateDatasets, updateSelectedDataset, connectionChange, getDeviceInfo, getDatasets, getSelectedDataset, getDeviceSetup, updateDeviceSetup, updateMeasurementRunning } from "actions"
+import { updateDeviceInfo, updateDatasets, updateSelectedDataset, connectionChange, getDeviceInfo, getDatasets, getSelectedDataset, getDeviceSetup, updateDeviceSetup, updateMeasurementRunning, newSample } from "actions"
 
 export default function setupSocket(socket, dispatch) {
 
@@ -33,6 +33,10 @@ export default function setupSocket(socket, dispatch) {
 
     socket.on("update_measurement_running", (running) => {
         dispatch(updateMeasurementRunning(running))
+    })
+
+    socket.on("new_sample", (sample) => {
+        dispatch(newSample(sample))
     })
 
 

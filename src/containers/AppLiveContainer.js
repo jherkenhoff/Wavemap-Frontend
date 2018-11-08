@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { AppLive } from 'components'
-import { addDataset, selectDataset, changeMeasurementRunning } from 'actions'
+import { addDataset, selectDataset, changeMeasurementRunning, startSingleSample } from 'actions'
 
 const mapStateToProps = state => {
     var liveState = state.liveState
@@ -10,7 +10,8 @@ const mapStateToProps = state => {
         isConnected: liveState.isConnected,
         selectedDataset: liveState.selectedDataset,
         deviceSetup: liveState.deviceSetup,
-        measurementStatus: liveState.measurementStatus
+        measurementStatus: liveState.measurementStatus,
+        liveSamples: liveState.liveSamples
     }
 }
 
@@ -24,6 +25,9 @@ const mapDispatchToProps = dispatch => {
         },
         handleChangeMeasurementRunning: (value) => {
             dispatch(changeMeasurementRunning(value))
+        },
+        handleStartSingleSample: () => {
+            dispatch(startSingleSample())
         }
     }
 }

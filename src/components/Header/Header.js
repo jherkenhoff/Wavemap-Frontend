@@ -19,8 +19,6 @@ const Header = (props) => {
         headerColor = undefined
     }
 
-    console.log(headerColor);
-
     return (
     <Menu pointing secondary inverted={headerInverted} color={headerColor} size="large">
         <Menu.Item header className={styles.title}>
