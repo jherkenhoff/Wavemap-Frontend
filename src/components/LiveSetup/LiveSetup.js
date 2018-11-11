@@ -33,7 +33,12 @@ const LiveSetup = (props) => {
         segmentColor="green"
     }
 
-    var datasets = props.datasets.map(entry => {return {key: entry.id, text: entry.name, value: entry.id}})
+    var datasets = props.datasets.map(entry => {return {key: entry.name, text: entry.name, value: entry.name, disabled: !entry.is_compatible}})
+
+    var frequencyRange = {
+        lower: Math.min(...props.deviceInfo.frequency_bins),
+        upper: Math.max(...props.deviceInfo.frequency_bins),
+    }
 
     return (
         <Segment className={styles.liveSetupSegment} color={segmentColor}>
@@ -52,11 +57,11 @@ const LiveSetup = (props) => {
                         </Table.Row>
                         <Table.Row>
                             <Table.Cell collapsing>Frequency range</Table.Cell>
-                            <Table.Cell>{formatFrequencyRange(props.deviceInfo.frequency_range)}</Table.Cell>
+                            <Table.Cell>{formatFrequencyRange(frequencyRange)}</Table.Cell>
                         </Table.Row>
                         <Table.Row>
                             <Table.Cell collapsing>Frequency bins</Table.Cell>
-                            <Table.Cell>{props.deviceInfo.frequency_bins}</Table.Cell>
+                            <Table.Cell>{props.deviceInfo.frequency_bins.length}</Table.Cell>
                         </Table.Row>
                     </Table.Body>
                 </Table>
@@ -74,7 +79,7 @@ const LiveSetup = (props) => {
                             selection
                             fluid
                             options={datasets}
-                            noResultsMessage="No datasets available"
+                            noResultsMessage="No compatible datasets available"
                             allowAdditions
                             value={props.selectedDataset}
                             onAddItem={props.onAddDataset}

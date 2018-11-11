@@ -30,7 +30,10 @@ const AppLive = (props) => (
                     liveSamples={props.liveSamples}/>
             </Grid.Column>
             <Grid.Column width={6}>
-                    <LiveSpectrum isConnected={props.isConnected} isRunning={props.measurementStatus.isRunning}/>
+                    <LiveSpectrum
+                        isConnected={props.isConnected}
+                        isRunning={props.measurementStatus.isRunning}
+                        liveSamples={props.liveSamples}/>
                     <MapPreview
                         isConnected={props.isConnected}
                         isRunning={props.measurementStatus.isRunning}

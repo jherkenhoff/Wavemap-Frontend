@@ -3,7 +3,9 @@ import { UPDATE_DATASETS, UPDATE_DEVICE_INFO, UPDATE_SELECTED_DATASET, UPDATE_ME
 const initialState = {
     datasets: [],
     selectedDataset: null,
-    deviceInfo: {},
+    deviceInfo: {
+        frequency_bins: []
+    },
     isConnected: false,
     deviceSetup: {},
     measurementStatus: {

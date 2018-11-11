@@ -37,6 +37,12 @@ const LiveSpectrum = (props) => {
         segmentColor="green"
     }
 
+    if (props.liveSamples.length >= 1) {
+        var data = props.liveSamples[props.liveSamples.length - 1].spectrum.map( (mag, i) => ({freq: i, mag: mag}))
+    } else {
+        var data = []
+    }
+
     return (
         <Segment className={styles.spectrumViewSegment} color={segmentColor}>
             <Header as="h3">Live Spectrum</Header>
