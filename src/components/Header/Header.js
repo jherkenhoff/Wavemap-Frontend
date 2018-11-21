@@ -7,31 +7,19 @@ import * as styles from './Header.less'
 
 const Header = (props) => {
 
-    var headerColor
-    var headerInverted = false
-    if (!props.connected) {
-        headerColor = "orange"
-        headerInverted = true
-    } else if (props.measurementStatus.isRunning) {
-        headerColor = "green"
-        headerInverted = true
-    } else {
-        headerColor = undefined
-    }
-
     return (
-    <Menu pointing secondary inverted={headerInverted} color={headerColor} size="large">
+    <Menu pointing secondary size="large" className={styles.header}>
         <Menu.Item header className={styles.title}>
             PJET Visualizer
         </Menu.Item>
-        <Link to="/live">
-            <Menu.Item active={props.location.pathname=="/live"}>Live control</Menu.Item>
-        </Link>
         <Link to="/map">
             <Menu.Item active={props.location.pathname=="/map"}>Noise Map</Menu.Item>
         </Link>
+        <Link to="/live">
+            <Menu.Item active={props.location.pathname=="/live"} disabled>Live control</Menu.Item>
+        </Link>
         <Link to="/raw">
-            <Menu.Item active={props.location.pathname=="/raw"}>Raw data</Menu.Item>
+            <Menu.Item active={props.location.pathname=="/raw"}  disabled>Raw data</Menu.Item>
         </Link>
     </Menu>
 )

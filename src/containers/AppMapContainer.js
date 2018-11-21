@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { AppMap } from 'components'
-import { addDataset, selectDataset } from 'actions'
+import { changeFreqFilter, deleteFreqFilter, addFreqFilter } from 'actions'
 
 const mapStateToProps = state => {
     return {
@@ -10,6 +10,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        handleFilterChange: (id, min, max) => {
+            dispatch(changeFreqFilter(id, min, max));
+        },
+        handleDeleteFilter: (id) => {
+            dispatch(deleteFreqFilter(id));
+        },
+        handleAddFilter: (min, max) => {
+            dispatch(addFreqFilter(min, max));
+        },
     }
 }
 

@@ -12,11 +12,12 @@ import setupSocket from 'sockets'
 import 'styling/semantic.less'
 
 
-var socket = io.connect('http://' + document.domain + ":5000");
+//var socket = io.connect('http://' + document.domain + ":5000");
 
-const store = createStore(rootReducer, applyMiddleware(thunk.withExtraArgument(socket)))
+//const store = createStore(rootReducer, applyMiddleware(thunk.withExtraArgument(socket)))
+const store = createStore(rootReducer, applyMiddleware(thunk))
 
-setupSocket(socket, store.dispatch)
+//setupSocket(socket, store.dispatch)
 
 const render = (Component) => {
     ReactDOM.render(

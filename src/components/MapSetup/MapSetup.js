@@ -8,6 +8,11 @@ import * as styles from './MapSetup.less'
 
 class MapSetup extends Component {
 
+    constructor(props) {
+        super(props);
+        this.onFilterChange = this.onFilterChange.bind(this);
+    }
+
     formatRangeLabel(value) {
         var tempValue = 10**value
         var unit = ""
@@ -34,24 +39,35 @@ class MapSetup extends Component {
         return tempValue + " " + unit
     }
 
+    onFilterChange(id, value) {
+        this.props.handleFilterChange(id, 10**value.min, 10**value.max)
+    }
+
     render() {
         var filterEntries = this.props.filters.map((filter) => (
-            <Table.Row>
+            <Table.Row key={filter.id}>
                 <Table.Cell
 
                     className={styles.slider}>
                     <InputRange
-                        className={styles.slider}
+                        draggableTrack
+                        step={0.1}
                         minValue={Math.log10(1e3)}
                         maxValue={Math.log10(1e9)}
                         formatLabel={this.formatRangeLabel}
-                        value={{min: Math.log10(filter.min), max: Math.log10(filter.max)}}/>
+                        value={{min: Math.log10(filter.min), max: Math.log10(filter.max)}}
+                        onChange={value => this.onFilterChange(filter.id, value)}/>
                 </Table.Cell>
                 <Table.Cell collapsing>
-                    <Button icon='trash alternate' basic circular/>
+                    <Button icon='trash alternate' basic circular
+                        onClick={() => this.props.handleDeleteFilter(filter.id)}/>
                 </Table.Cell>
             </Table.Row>
         ));
+
+        const emptyMessage = (
+            "No filters set up. You are currently seeing the whole spectrum."
+        )
 
         return (
             <Segment className={styles.liveSetupSegment}>
@@ -63,10 +79,20 @@ class MapSetup extends Component {
                         fluid
                         noResultsMessage="No datasets available"/>
 
-                    <Header as="h3">Filter</Header>
                     <Table basic="very">
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.Cell>
+                                    <Header as="h3">Filter</Header>
+                                </Table.Cell>
+                                <Table.Cell collapsing>
+                                    <Button icon='plus' basic positive circular
+                                        onClick={ () => this.props.handleAddFilter(3e3, 3e6)}/>
+                                </Table.Cell>
+                            </Table.Row>
+                        </Table.Header>
                         <Table.Body>
-                            {filterEntries}
+                            {filterEntries.length == 0 ? emptyMessage : filterEntries}
                         </Table.Body>
                     </Table>
                 </div>

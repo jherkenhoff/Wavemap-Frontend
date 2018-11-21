@@ -3,8 +3,6 @@ import { Header } from 'components'
 
 const mapStateToProps = state => {
     return {
-        connected: state.liveState.isConnected,
-        measurementStatus: state.liveState.measurementStatus
     }
 }
 

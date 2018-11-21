@@ -11,8 +11,12 @@ const AppMap = (props) => (
                 <Heatmap/>
             </Grid.Column>
             <Grid.Column width={5}>
-                <SpectrumView/>
-                <MapSetup filters={props.filters}/>
+                <SpectrumView filters={props.filters}/>
+                <MapSetup
+                    filters={props.filters}
+                    handleFilterChange={props.handleFilterChange}
+                    handleDeleteFilter={props.handleDeleteFilter}
+                    handleAddFilter={props.handleAddFilter}/>
             </Grid.Column>
         </Grid.Row>
     </Grid>
