@@ -31,16 +31,13 @@ for (var i = 140; i < 200; i++) {
 const SpectrumView = (props) => (
     <Segment className={styles.spectrumViewSegment}>
         <Header as="h3">Spectrum</Header>
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={150}>
             <AreaChart data={data}
                 margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
                 baseValue="dataMin"
             >
                 <CartesianGrid strokeDasharray="3 3"/>
                 <XAxis dataKey="freq"/>
-                <Brush dataKey='freq' height={20} stroke="#8884d8"
-                    travellerWidth={20}
-                    stroke="#888"/>
                 <YAxis allowDecimals={false}/>
                 <Tooltip/>
                 <ReferenceArea x1={data[150].freq} x2={data[180].freq}/>

@@ -4,8 +4,14 @@ const initialState = {
     filters: [
         {
             type: "BANDPASS",
-            min: 10,
-            max: 18
+            min: 5e3,
+            max: 10e4
+        },
+
+        {
+            type: "BANDPASS",
+            min: 5e6,
+            max: 10e7
         }
     ]
 }

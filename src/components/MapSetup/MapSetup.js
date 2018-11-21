@@ -9,21 +9,46 @@ import * as styles from './MapSetup.less'
 class MapSetup extends Component {
 
     formatRangeLabel(value) {
-        return 10**value
+        var tempValue = 10**value
+        var unit = ""
+        if (tempValue >= 1e9) {
+            tempValue = tempValue / 1e9
+            unit = "GHz"
+        } else if (tempValue >= 1e6) {
+            tempValue = tempValue / 1e6
+            unit = "MHz"
+        } else if (tempValue >= 1e3) {
+            tempValue = tempValue / 1e3
+            unit = "kHz"
+        } else {
+            tempValue = tempValue
+            unit = "Hz"
+        }
+
+        if (tempValue >= 100) {
+            tempValue = tempValue.toFixed(0)
+        } else {
+            tempValue = tempValue.toFixed(1)
+        }
+
+        return tempValue + " " + unit
     }
 
     render() {
         var filterEntries = this.props.filters.map((filter) => (
             <Table.Row>
-                <Table.Cell>
+                <Table.Cell
+
+                    className={styles.slider}>
                     <InputRange
-                        maxValue={20}
-                        minValue={0}
+                        className={styles.slider}
+                        minValue={Math.log10(1e3)}
+                        maxValue={Math.log10(1e9)}
                         formatLabel={this.formatRangeLabel}
-                        value={{min: filter.min, max: filter.max}}/>
+                        value={{min: Math.log10(filter.min), max: Math.log10(filter.max)}}/>
                 </Table.Cell>
                 <Table.Cell collapsing>
-                    <Button icon='trash alternate'  basic circular/>
+                    <Button icon='trash alternate' basic circular/>
                 </Table.Cell>
             </Table.Row>
         ));
@@ -31,17 +56,12 @@ class MapSetup extends Component {
         return (
             <Segment className={styles.liveSetupSegment}>
                 <div className={styles.topAligned}>
-                    <Header as="h3">Map Setup</Header>
-                    <Form>
-                        <Form.Field>
-                            <label>Dataset</label>
-                            <Dropdown
-                                placeholder="Select dataset"
-                                selection
-                                fluid
-                                noResultsMessage="No datasets available"/>
-                        </Form.Field>
-                    </Form>
+                    <Header as="h3">Dataset</Header>
+                    <Dropdown
+                        placeholder="Select dataset"
+                        selection
+                        fluid
+                        noResultsMessage="No datasets available"/>
 
                     <Header as="h3">Filter</Header>
                     <Table basic="very">
@@ -52,7 +72,7 @@ class MapSetup extends Component {
                 </div>
                 <div>
                     <Button positive floated="right">
-                        Update
+                        Update Map
                     </Button>
                 </div>
             </Segment>

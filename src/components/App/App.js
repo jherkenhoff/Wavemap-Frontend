@@ -10,7 +10,7 @@ const App = (props) => (
             <Route path="/" component={HeaderContainer}/>
             <Route path="/live" exact component={AppLiveContainer}/>
             <Route path="/map" exact component={AppMapContainer}/>
-            <Redirect from="/" to="/live"/>
+            <Redirect from="/" to="/map"/>
         </div>
     </Router>
 )
