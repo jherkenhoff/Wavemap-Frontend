@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Segment, Header, Table, Popup, Divider, Placeholder, Form, Button, Dropdown, Icon, Input, Label, Checkbox } from 'semantic-ui-react'
+import { Segment, Header, Transition, Table, Popup, Divider, Placeholder, Form, Button, Dropdown, Icon, Input, Label, Checkbox } from 'semantic-ui-react'
 import InputRange from 'react-input-range'
 import "react-input-range/lib/css/index.css"
 
@@ -69,15 +69,23 @@ class MapSetup extends Component {
             "No filters set up. You are currently seeing the whole spectrum."
         )
 
+        const dropdownOptions = this.props.datasets.map( (dataset) => ({
+            key: dataset.id,
+            value: dataset.id,
+            text: dataset.name
+        }))
+
         return (
             <Segment className={styles.liveSetupSegment}>
                 <div className={styles.topAligned}>
                     <Header as="h3">Dataset</Header>
                     <Dropdown
                         placeholder="Select dataset"
-                        selection
                         fluid
-                        noResultsMessage="No datasets available"/>
+                        selection
+                        search
+                        noResultsMessage="No datasets available"
+                        options={dropdownOptions}/>
 
                     <Table basic="very">
                         <Table.Header>
@@ -97,7 +105,7 @@ class MapSetup extends Component {
                     </Table>
                 </div>
                 <div>
-                    <Button positive floated="right">
+                    <Button positive floated="right" onClick={ () => {this.props.fetchData(0,0)}}>
                         Update Map
                     </Button>
                 </div>

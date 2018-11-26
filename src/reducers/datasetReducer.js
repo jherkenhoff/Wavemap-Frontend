@@ -1,28 +1,10 @@
-import { UPDATE_DATASETS, CHANGE_FREQ_FILTER, DELETE_FREQ_FILTER, ADD_FREQ_FILTER, UPDATE_DATA } from "actions"
+import { UPDATE_DATASETS } from "actions"
 
-import uuid from "uuid"
 
-const initialState = {
-    datasets: [],
-    filters: [
-        {id: uuid.v1(), min: 5e3, max: 10e4},
-        {id: uuid.v1(), min: 5e6,max: 10e7}
-    ],
-    data: []
-}
+const initialState = []
 
-export default function reducer(state = initialState, action) {
+export default function datasetReducer(state = initialState, action) {
     switch (action.type) {
-        case UPDATE_DATASETS:
-            return { ...state,
-                datasets: action.datasets
-            }
-
-        case UPDATE_DATA:
-            return { ...state,
-                data: action.data
-            }
-
         case CHANGE_FREQ_FILTER:
             return { ...state,
                     filters: state.filters.map( (filter) => filter.id === action.id ?
@@ -36,6 +18,13 @@ export default function reducer(state = initialState, action) {
             }
 
         case ADD_FREQ_FILTER:
+            console.log({ ...state,
+                    filters: [...state.filters, {
+                        id: action.id,
+                        min: action.min,
+                        max: action.max
+                    }]
+            });
             return { ...state,
                     filters: [...state.filters, {
                         id: action.id,
@@ -43,6 +32,8 @@ export default function reducer(state = initialState, action) {
                         max: action.max
                     }]
             }
+
+
 
         default:
             return state
