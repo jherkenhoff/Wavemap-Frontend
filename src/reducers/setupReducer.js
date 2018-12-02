@@ -1,20 +1,15 @@
-import { UPDATE_DATASETS, UPDATE_DEVICE_INFO, UPDATE_SELECTED_DATASET, UPDATE_MEASUREMENT_RUNNING, CONNECTION_CHANGE, UPDATE_DEVICE_SETUP, NEW_SAMPLE } from "actions"
+import { CHANGE_FREQ_FILTER, DELETE_FREQ_FILTER, ADD_FREQ_FILTER, SELECT_DATASET, SELECT_SUBSET, TOGGLE_FILTER, CHANGE_PREPROCESSOR_TYPE } from "actions"
 
 const initialState = {
-    datasets: [],
-    selectedDataset: null,
-    deviceInfo: {
-        frequency_bins: []
-    },
-    isConnected: false,
-    deviceSetup: {},
-    measurementStatus: {
-        isRunning: false
-    },
-    liveSamples: []
+    selectedDataset: undefined,
+    selectedSubset: undefined,
+    filters: [],
+    preprocessor: {
+        type: "AVERAGE"
+    }
 }
 
-export default function liveReducer(state = initialState, action) {
+export default function setupReducer(state = initialState, action) {
     switch (action.type) {
         case UPDATE_DATASETS:
             return { ...state, datasets: action.datasets}

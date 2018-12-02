@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Segment, Header, Transition, Table, Popup, Divider, Placeholder, Form, Button, Dropdown, Icon, Input, Label, Checkbox } from 'semantic-ui-react'
+import { CollapseableSegment } from "components"
 import InputRange from 'react-input-range'
 import "react-input-range/lib/css/index.css"
 
@@ -11,6 +12,8 @@ class MapSetup extends Component {
     constructor(props) {
         super(props);
         this.onFilterChange = this.onFilterChange.bind(this);
+        this.onSelectDataset = this.onSelectDataset.bind(this);
+        this.onSelectSubset = this.onSelectSubset.bind(this);
     }
 
     formatRangeLabel(value) {
@@ -43,73 +46,116 @@ class MapSetup extends Component {
         this.props.handleFilterChange(id, 10**value.min, 10**value.max)
     }
 
+    onSelectDataset(e, {name, value}) {
+        this.props.handleSelectDataset(value)
+    }
+
+    onSelectSubset(e, {name, value}) {
+        this.props.handleSelectSubset(value)
+    }
+
     render() {
-        var filterEntries = this.props.filters.map((filter) => (
-            <Table.Row key={filter.id}>
-                <Table.Cell
 
-                    className={styles.slider}>
-                    <InputRange
-                        draggableTrack
-                        step={0.1}
-                        minValue={Math.log10(1e3)}
-                        maxValue={Math.log10(1e9)}
-                        formatLabel={this.formatRangeLabel}
-                        value={{min: Math.log10(filter.min), max: Math.log10(filter.max)}}
-                        onChange={value => this.onFilterChange(filter.id, value)}/>
-                </Table.Cell>
-                <Table.Cell collapsing>
-                    <Button icon='trash alternate' basic circular
-                        onClick={() => this.props.handleDeleteFilter(filter.id)}/>
-                </Table.Cell>
-            </Table.Row>
-        ));
-
-        const emptyMessage = (
-            "No filters set up. You are currently seeing the whole spectrum."
-        )
-
-        const dropdownOptions = this.props.datasets.map( (dataset) => ({
+        const datasetOptions = this.props.datasets.map( (dataset) => ({
             key: dataset.id,
             value: dataset.id,
             text: dataset.name
         }))
 
-        return (
-            <Segment className={styles.liveSetupSegment}>
-                <div className={styles.topAligned}>
-                    <Header as="h3">Dataset</Header>
-                    <Dropdown
-                        placeholder="Select dataset"
-                        fluid
-                        selection
-                        search
-                        noResultsMessage="No datasets available"
-                        options={dropdownOptions}/>
+        var subsetOptions = []
+        if (this.props.setup.selectedDataset != undefined) {
+            subsetOptions = this.props.datasets[this.props.setup.selectedDataset].subsets.map( (subset) => ({
+                key: subset.id,
+                value: subset.id,
+                text: subset.name,
+                description: subset.length
+            }))
+        }
 
-                    <Table basic="very">
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.Cell>
-                                    <Header as="h3">Filter</Header>
-                                </Table.Cell>
-                                <Table.Cell collapsing>
-                                    <Button icon='plus' basic positive circular
-                                        onClick={ () => this.props.handleAddFilter(3e3, 3e6)}/>
-                                </Table.Cell>
-                            </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {filterEntries.length == 0 ? emptyMessage : filterEntries}
-                        </Table.Body>
-                    </Table>
-                </div>
-                <div>
-                    <Button positive floated="right" onClick={ () => {this.props.fetchData(0,0)}}>
-                        Update Map
-                    </Button>
-                </div>
-            </Segment>
+        var additionalLabel = []
+        if (this.props.setup.selectedDataset != undefined) {
+            additionalLabel = [
+                <Popup trigger={
+                    <Label color="teal">{this.props.datasets[this.props.setup.selectedDataset].name}</Label>}/>
+            ]
+        }
+
+        if (this.props.setup.selectedSubset != undefined) {
+            additionalLabel.push(<Label color="yellow">{this.props.datasets[this.props.setup.selectedDataset].subsets[this.props.setup.selectedSubset].name}</Label>)
+        }
+
+        var deviceInfo = undefined
+        if (this.props.setup.selectedDataset != undefined) {
+            deviceInfo = (
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><Header as="h5">Device</Header></td>
+                        </tr>
+                        <tr>
+                            <td>Name:</td>
+                            <td>{this.props.datasets[this.props.setup.selectedDataset].device.name}</td>
+                        </tr>
+                        <tr>
+                            <td>Version:</td>
+                            <td>{this.props.datasets[this.props.setup.selectedDataset].device.version}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            )
+        }
+
+        var subsetInfo = undefined
+        if (this.props.setup.selectedSubset != undefined) {
+            subsetInfo = (
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><Header as="h5">Subset</Header></td>
+                        </tr>
+                        <tr>
+                            <td>Datapoints:</td>
+                            <td>{this.props.datasets[this.props.setup.selectedDataset].subsets[this.props.setup.selectedSubset].length}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            )
+        }
+
+        return (
+            <CollapseableSegment
+                color={(this.props.setup.selectedDataset == undefined || this.props.setup.selectedSubset == undefined) && "red"}
+                header="Dataset"
+                icon="database"
+                additional={additionalLabel}
+                active={this.props.active}>
+                <Form>
+                    <Form.Group widths='equal'>
+                        <Form.Dropdown
+                            onChange={this.onSelectDataset}
+                            placeholder="Select dataset"
+                            fluid
+                            label="1. Dataset"
+                            selection
+                            value={this.props.setup.selectedDataset}
+                            noResultsMessage="No datasets available"
+                            options={datasetOptions}/>
+                        <Form.Dropdown
+                            onChange={this.onSelectSubset}
+                            placeholder="Select subset"
+                            fluid
+                            label="2. Subset"
+                            selection
+                            value={this.props.setup.selectedSubset}
+                            disabled={this.props.setup.selectedDataset == undefined}
+                            noResultsMessage="No subsets available"
+                            options={subsetOptions}/>
+                    </Form.Group>
+                </Form>
+
+                {deviceInfo}
+                {subsetInfo}
+            </CollapseableSegment>
         )
     }
 }

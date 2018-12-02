@@ -1,0 +1,20 @@
+@import '~heading.less';
+
+
+.liveSetupSegment {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.topAligned {
+    flex: 1;
+}
+
+.slider {
+    :global(.input-range__label--max), :global(.input-range__label--min) {
+        :global(.input-range__label-container) {
+            left: unset !important;
+        }
+    }
+}

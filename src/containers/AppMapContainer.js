@@ -1,12 +1,13 @@
 import { connect } from 'react-redux'
 import { AppMap } from 'components'
-import { changeFreqFilter, deleteFreqFilter, addFreqFilter, fetchData } from 'actions'
+import { changeFreqFilter, deleteFreqFilter, addFreqFilter, toggleFreqFilter, fetchData, selectDataset, selectSubset, setMarker } from 'actions'
 
 const mapStateToProps = state => {
     return {
-        filters: state.filters,
         datasets: state.datasets,
-        data: state.data
+        data: state.data,
+        setup: state.setup,
+        selectedSample: state.selectedSample
     }
 }
 
@@ -21,9 +22,21 @@ const mapDispatchToProps = dispatch => {
         handleAddFilter: (min, max) => {
             dispatch(addFreqFilter(min, max));
         },
+        handleToggleFilter: (id) => {
+            dispatch(toggleFreqFilter(id));
+        },
         fetchData: (dataset_id, subset_id) => {
             dispatch(fetchData(dataset_id, subset_id));
         },
+        handleSelectDataset: (dataset_id) => {
+            dispatch(selectDataset(dataset_id));
+        },
+        handleSelectSubset: (subset_id) => {
+            dispatch(selectSubset(subset_id));
+        },
+        setMarker: (data_index) => {
+            dispatch(setMarker(data_index));
+        }
     }
 }
 
