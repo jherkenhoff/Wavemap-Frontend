@@ -31,16 +31,24 @@ class PreprocessorSetup extends Component {
     render() {
 
         const options = [
-            {key: 0, value: "AVERAGE",         text: "Average"},
-            {key: 1, value: "MIN",             text: "Min"},
-            {key: 2, value: "MAX",             text: "Max"},
-            {key: 3, value: "HISTOGRAM",       text: "Histogram"},
-            {key: 4, value: "FIXED_THRESHOLD", text: "Fixed threshold"},
+            {key: 0, value: "AVERAGE",         text: "Average", disabled: false},
+            {key: 1, value: "MIN",             text: "Min", disabled: true},
+            {key: 2, value: "MAX",             text: "Max", disabled: true},
+            {key: 3, value: "HISTOGRAM",       text: "Histogram", disabled: true},
+            {key: 4, value: "FIXED_THRESHOLD", text: "Fixed threshold", disabled: true},
         ]
 
         return (
-            <CollapseableSegment header="Heatmap Preprocessor" icon="code">
-                <Dropdown placeholder="Select preprocessor" fluid selection options={options}/>
+            <CollapseableSegment
+                header="Heatmap Preprocessor"
+                icon="code"
+                additional={<Label color="yellow">Average</Label>}>
+                <Dropdown
+                    placeholder="Select preprocessor"
+                    fluid
+                    selection
+                    options={options}
+                    value="AVERAGE"/>
 
                 <ResponsiveContainer width="100%" height={150}>
                     <BarChart

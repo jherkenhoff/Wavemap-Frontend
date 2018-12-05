@@ -12,6 +12,7 @@ class FilterSetup extends Component {
     constructor(props) {
         super(props);
         this.onFilterChange = this.onFilterChange.bind(this);
+        this.onExamplePreset = this.onExamplePreset.bind(this);
     }
 
     formatRangeLabel(value) {
@@ -42,6 +43,12 @@ class FilterSetup extends Component {
 
     onFilterChange(id, value) {
         this.props.handleFilterChange(id, 10**value.min, 10**value.max)
+    }
+
+    onExamplePreset() {
+        this.props.handleAddFilter(2e3, 5e4)
+        this.props.handleAddFilter(2e6, 4e7)
+        this.props.handleAddFilter(1e8, 1e9)
     }
 
     render() {
@@ -80,9 +87,11 @@ class FilterSetup extends Component {
                 direction="left">
                 <Dropdown.Menu>
                     <Dropdown.Header content="Select preset"/>
-                    <Dropdown.Item description="3" text="GSM"/>
+                    <Dropdown.Item description="3" text="Example Filter"
+                        onClick={this.onExamplePreset}/>
 
                     <Dropdown.Divider/>
+                    <Dropdown.Item text="Save"/>
                 </Dropdown.Menu>
             </Dropdown>
         )
