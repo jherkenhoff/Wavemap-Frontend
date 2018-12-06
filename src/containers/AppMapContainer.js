@@ -4,10 +4,11 @@ import { changeFreqFilter, deleteFreqFilter, addFreqFilter, toggleFreqFilter, fe
 
 const mapStateToProps = state => {
     return {
+        appState: state.appState,
         datasets: state.datasets,
         data: state.data,
         setup: state.setup,
-        selectedSample: state.selectedSample
+        marker: state.marker
     }
 }
 

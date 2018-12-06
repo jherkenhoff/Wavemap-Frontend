@@ -44,7 +44,7 @@ class CollapseableSegment extends Component {
                     </div>
                 </Segment>
 
-                {this.state.isOpen && <Segment>{this.props.children}</Segment>}
+                {this.state.isOpen && <Segment loading={this.props.loading}>{this.props.children}</Segment>}
 
             </Segment.Group>
         )

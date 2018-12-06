@@ -1,8 +1,12 @@
-import { UPDATE_DATASETS, CHANGE_FREQ_FILTER, DELETE_FREQ_FILTER, ADD_FREQ_FILTER, UPDATE_DATA, SELECT_DATASET, SELECT_SUBSET, SET_MARKER_POSITION, TOGGLE_FILTER, CHANGE_PREPROCESSOR_TYPE, UPDATE_SELECTED_SAMPLE } from "actions"
+import { UPDATE_DATASETS, CHANGE_FREQ_FILTER, DELETE_FREQ_FILTER, ADD_FREQ_FILTER, UPDATE_DATA, SELECT_DATASET, SELECT_SUBSET, SET_MARKER_POSITION, TOGGLE_FILTER, CHANGE_PREPROCESSOR_TYPE, UPDATE_SELECTED_SAMPLE, UPDATE_MARKER_LOADING } from "actions"
 
 import uuid from "uuid"
 
 const initialState = {
+    appState: {
+        backendConnected: false,
+        dataLoading: false
+    },
     datasets: [],
     setup: {
         selectedDataset: undefined,
@@ -10,7 +14,10 @@ const initialState = {
         filters: []
     },
     data: [],
-    selectedSample: {},
+    marker: {
+        loading: false,
+        sample: undefined
+    },
     markerDataIndex: undefined
 }
 
@@ -73,7 +80,6 @@ export default function reducer(state = initialState, action) {
             }
 
         case TOGGLE_FILTER:
-            console.log(state);
             return { ...state,
                     setup: {
                         ...state.setup,
@@ -88,7 +94,18 @@ export default function reducer(state = initialState, action) {
 
         case UPDATE_SELECTED_SAMPLE:
             return { ...state,
-                selectedSample: action.sample
+                marker: {
+                    ...state.marker,
+                    sample: action.sample
+                }
+            }
+
+        case UPDATE_MARKER_LOADING:
+            return { ...state,
+                marker: {
+                    ...state.marker,
+                    loading: action.loading
+                }
             }
 
 

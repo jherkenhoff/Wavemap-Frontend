@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Button, Transition } from 'semantic-ui-react'
+import { Grid, Dimmer, Header, Icon, Button, Transition } from 'semantic-ui-react'
 import { DataTable, Heatmap, SpectrumView, MapSetup, FilterSetup, PreprocessorSetup } from 'components'
 
 import * as styles from './AppMap.less'
@@ -15,7 +15,7 @@ const AppMap = (props) => (
             <Grid.Column width={5} className={styles.sidebar} stretched>
                 <SpectrumView
                     setup={props.setup}
-                    selectedSample={props.selectedSample}/>
+                    marker={props.marker}/>
                 <MapSetup
                     active
                     datasets={props.datasets}

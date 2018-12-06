@@ -1,4 +1,4 @@
-import { updateDatasets, updateData, updateSelectedSample } from "./dataActions"
+import { updateDatasets, updateData, updateSelectedSample, updateMarkerLoading } from "./dataActions"
 import { setMarkerPosition } from "./mapActions"
 
 const restServerDomain = "http://" + document.domain + ":5000"
@@ -30,17 +30,22 @@ export function fetchData(dataset_id, subset_id) {
 }
 
 export function setMarker(sample_id) {
-    console.log(sample_id);
     return (dispatch, getState) => {
         dispatch(setMarkerPosition(sample_id))
+        if (sample_id == undefined) {
+            dispatch(updateSelectedSample(undefined))
+            return
+        }
+
+        dispatch(updateMarkerLoading(true))
 
         const { setup } = getState();
 
         fetch(restServerDomain + "/api/v1/datasets/" + setup.selectedDataset + "/subsets/" + setup.selectedSubset + "/samples/" + sample_id)
             .then( (resp) => resp.json() )
             .then( (data) => {
-                console.log(data);
                 dispatch(updateSelectedSample(data))
+                dispatch(updateMarkerLoading(false))
             })
             .catch( (error) => {
                 console.error(error);

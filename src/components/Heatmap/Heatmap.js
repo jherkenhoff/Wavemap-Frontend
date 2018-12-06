@@ -29,6 +29,8 @@ class MapPreview extends Component {
                 markerPos: [nearest[0].lat, nearest[0].lon]
             })
             this.props.setMarker(nearest[0].id)
+        } else {
+            this.props.setMarker(undefined)
         }
     }
 
