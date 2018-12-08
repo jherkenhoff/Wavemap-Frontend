@@ -10,7 +10,8 @@ const AppMap = (props) => (
             <Grid.Column width={11} stretched>
                 <Heatmap
                     data={props.data}
-                    setMarker={props.setMarker}/>
+                    setMarker={props.setMarker}
+                    marker={props.marker}/>
             </Grid.Column>
             <Grid.Column width={5} className={styles.sidebar} stretched>
                 <SpectrumView

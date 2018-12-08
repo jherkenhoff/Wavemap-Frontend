@@ -41,10 +41,13 @@ class Area extends React.Component {
 
         this.margin = {
             top: 20,
-            left: 45,
+            left: 40,
             right: 20,
-            bottom: 45
+            bottom: 30
         }
+
+        this.brushHeight = 30
+        this.padding = 30
     }
 
     handleTooltip({ event, data, xData, xScale, yScale }) {
@@ -78,12 +81,15 @@ class Area extends React.Component {
         } = this.props;
 
         const margin = this.margin
+        const brushHeight = this.brushHeight
+        const padding = this.padding
 
         // bounds
         const width = parentWidth
-        const height = 300
+        const height = parentHeight
         const xMax = width - margin.left - margin.right;
         const yMax = height - margin.top - margin.bottom;
+        const plotYMax = yMax - brushHeight - padding;
 
         // Find extrema
         const minMag = min(data, yData)
@@ -94,8 +100,13 @@ class Area extends React.Component {
           range: [0, xMax],
           domain: extent(data, xData)
         });
-        const yScale = scaleLinear({
-          range: [yMax, 0],
+        const plotYScale = scaleLinear({
+          range: [plotYMax, 0],
+          domain: [minMag, maxMag],
+          nice: true
+        });
+        const brushYScale = scaleLinear({
+          range: [brushHeight, 0],
           domain: [minMag, maxMag],
           nice: true
         });
@@ -108,93 +119,177 @@ class Area extends React.Component {
                 <svg ref={s => (this.svg = s)} width={width} height={height}>
                     <LinearGradient
                         id="fill"
-                        from="#122549"
-                        to="#b4fbde"
-                        fromOpacity={0.8}
-                        toOpacity={0.8}
+                        from="#fff"
+                        to="#fff"
+                        fromOpacity={0.2}
+                        toOpacity={0.0}
                         />
-                    <Group top={margin.top} left={margin.left}>
+                    <PatternLines
+                        id="dLines"
+                        height={6}
+                        width={6}
+                        stroke="rgba(255,255,255,0.3)"
+                        strokeWidth={1}
+                        orientation={['diagonal']}
+                        />
+
+                    <Group top={margin.top}>
                         <GridRows
-                            lineStyle={{ pointerEvents: 'none' }}
-                            scale={yScale}
-                            width={xMax}
-                            stroke="rgba(0,0,0,0.2)"
+                            width={width}
+                            height={plotYMax}
+                            scale={plotYScale}
+                            stroke="rgba(255,255,255,0.2)"
                             />
-                        <GridColumns
-                            lineStyle={{ pointerEvents: 'none' }}
-                            scale={xScale}
-                            height={yMax}
-                            stroke="rgba(0,0,0,0.2)"
-                            />
-                        <AreaClosed
-                            stroke="transparent"
-                            data={data}
-                            x={d => xScale(xData(d))}
-                            y={d => yScale(yData(d))}
-                            yScale={yScale}
-                            fill="url(#fill)"
-                            />
-
-                        <AxisBottom
-                            scale={xScale}
-                            top={yMax}
-                            label="Frequency in Hz"
-                            tickFormat={xFormatter}
-                            stroke="#333333"
-                            tickStroke="#333333"
-                            />
-                        <AxisLeft
-                            scale={yScale}
-                            label="RF Power in dBm"
-                            labelProps={{ fontSize: 12, fill: 'black' }}
-                            />
-
-
-                        <Bar
-                            x={0}
-                            y={0}
-                            width={xMax}
-                            height={yMax}
-                            fill="transparent"
-                            rx={14}
-                            data={data}
-                            onTouchStart={event =>
-                                this.handleTooltip({
-                                    event,
-                                    xData,
-                                    xScale,
-                                    yScale,
-                                    data: data
-                                })
-                            }
-                            onTouchMove={event =>
-                                this.handleTooltip({
-                                    event,
-                                    xData,
-                                    xScale,
-                                    yScale,
-                                    data: data
-                                })
-                            }
-                            onMouseMove={event =>
-                                this.handleTooltip({
-                                    event,
-                                    xData,
-                                    xScale,
-                                    yScale,
-                                    data: data
-                                })
-                            }
-                            onMouseLeave={event => hideTooltip()}
-                            />
-
-                            <Line
-                                from={{ x: 0, y: yScale(maxMag) }}
-                                to={{ x: xMax, y: yScale(maxMag) }}
-                                stroke="rgba(92, 119, 235, 1.000)"
-                                strokeWidth={2}
-                                strokeDasharray="2,2"
+                        <Group left={margin.left}>
+                            <GridColumns
+                                width={width}
+                                height={plotYMax}
+                                scale={xScale}
+                                stroke="rgba(255,255,255,0.1)"
                                 />
+                            <AreaClosed
+                                stroke="transparent"
+                                data={data}
+                                x={d => xScale(xData(d))}
+                                y={d => plotYScale(yData(d))}
+                                yScale={plotYScale}
+                                fill="url(#fill)"
+                                />
+                            <AreaClosed
+                                stroke="transparent"
+                                data={data}
+                                x={d => xScale(xData(d))}
+                                y={d => plotYScale(yData(d))}
+                                yScale={plotYScale}
+                                fill="url(#dLines)"
+                                />
+                            <LinePath
+                                data={data}
+                                x={d => xScale(xData(d))}
+                                y={d => plotYScale(yData(d))}
+                                yScale={plotYScale}
+                                stroke="#FFF"
+                                strokeOpacity="1"
+                                strokeWidth={1}
+                                />
+                            <AxisBottom
+                                scale={xScale}
+                                top={plotYMax}
+                                tickFormat={xFormatter}
+                                stroke="rgba(255,255,255,0.5)"
+                                tickStroke="rgba(255,255,255,0.5)"
+                                tickLabelProps={(value, index) => ({
+                                        fill: "white",
+                                        fillOpacity: 0.8,
+                                        fontSize: 12,
+                                        textAnchor: 'middle'
+
+                                    })}
+                                />
+                            <text x={xMax-5} y={plotYMax-5} fontSize={10} textAnchor="end" fill="white">
+                                Frequency / Hz &rarr;
+                            </text>
+
+                            <AxisLeft
+                                hideTicks
+                                hideAxisLine
+                                scale={plotYScale}
+                                tickLabelProps={(value, index) => ({
+                                        fill: "white",
+                                        fillOpacity: 0.8,
+                                        fontSize: 12,
+                                        textAnchor: 'end'
+
+                                    })}
+                                />
+                            <text x={-5} y={15} transform="rotate(-90)" fontSize={10} textAnchor="end" fill="white">
+                                RF Power / dBm &rarr;
+                            </text>
+
+
+
+                            <Bar
+                                x={0}
+                                y={0}
+                                width={xMax}
+                                height={plotYMax}
+                                fill="transparent"
+                                rx={14}
+                                data={data}
+                                onTouchStart={event =>
+                                    this.handleTooltip({
+                                        event,
+                                        xData,
+                                        xScale,
+                                        yScale: plotYScale,
+                                        data
+                                    })
+                                }
+                                onTouchMove={event =>
+                                    this.handleTooltip({
+                                        event,
+                                        xData,
+                                        xScale,
+                                        yScale: plotYScale,
+                                        data
+                                    })
+                                }
+                                onMouseMove={event =>
+                                    this.handleTooltip({
+                                        event,
+                                        xData,
+                                        xScale,
+                                        yScale: plotYScale,
+                                        data: data
+                                    })
+                                }
+                                onMouseLeave={event => hideTooltip()}
+                                />
+                        </Group>
+                    </Group>
+
+                    <Group top={height-margin.bottom-brushHeight}>
+                        <Group left={margin.left}>
+                            <AreaClosed
+                                stroke="transparent"
+                                data={data}
+                                x={d => xScale(xData(d))}
+                                y={d => brushYScale(yData(d))}
+                                yScale={brushYScale}
+                                fill="url(#fill)"
+                                />
+                            <AreaClosed
+                                stroke="transparent"
+                                data={data}
+                                x={d => xScale(xData(d))}
+                                y={d => brushYScale(yData(d))}
+                                yScale={brushYScale}
+                                fill="url(#dLines)"
+                                />
+                            <LinePath
+                                data={data}
+                                x={d => xScale(xData(d))}
+                                y={d => brushYScale(yData(d))}
+                                yScale={brushYScale}
+                                stroke="#FFF"
+                                strokeOpacity="1"
+                                strokeWidth={1}
+                                />
+                            <AxisBottom
+                                scale={xScale}
+                                top={brushHeight}
+                                tickFormat={xFormatter}
+                                stroke="rgba(255,255,255,0.5)"
+                                tickStroke="rgba(255,255,255,0.5)"
+                                tickLabelProps={(value, index) => ({
+                                        fill: "white",
+                                        fillOpacity: 0.8,
+                                        fontSize: 12,
+                                        textAnchor: 'middle'
+
+                                    })}
+                                />
+                        </Group>
                     </Group>
 
 
@@ -204,11 +299,10 @@ class Area extends React.Component {
                         <Group top={margin.top}>
                             <Line
                                 from={{ x: tooltipLeft, y: 0 }}
-                                to={{ x: tooltipLeft, y: yMax }}
-                                stroke="rgba(92, 119, 235, 1.000)"
-                                strokeWidth={2}
+                                to={{ x: tooltipLeft, y: plotYMax }}
+                                stroke="#fff"
+                                strokeWidth={1}
                                 style={{ pointerEvents: 'none' }}
-                                strokeDasharray="2,2"
                                 />
                             <circle
                                 cx={tooltipLeft}
@@ -248,7 +342,7 @@ class Area extends React.Component {
                             {`${yData(tooltipData).toFixed(2)} dBm`}
                         </Tooltip>
                         <Tooltip
-                            top={yMax - 14 + this.margin.top}
+                            top={plotYMax - 14 + this.margin.top}
                             left={tooltipLeft}
                             style={{
                                 transform: 'translateX(-50%)'

@@ -53,26 +53,26 @@ class FilterSetup extends Component {
 
     render() {
         var filterEntries = this.props.setup.filters.map((filter) => (
-            <Table.Row key={filter.id}>
-                <Table.Cell className={styles.slider}>
-                    <InputRange
-                        disabled={!filter.active}
-                        draggableTrack
-                        step={0.1}
-                        minValue={Math.log10(1e3)}
-                        maxValue={Math.log10(1e9)}
-                        formatLabel={this.formatRangeLabel}
-                        value={{min: Math.log10(filter.min), max: Math.log10(filter.max)}}
-                        onChange={value => this.onFilterChange(filter.id, value)}/>
-                </Table.Cell>
-                <Table.Cell collapsing>
-                    <Button icon="eye slash" basic={filter.active} circular
-                        onClick={() => this.props.handleToggleFilter(filter.id)}/>
-                    <Button icon='trash alternate' basic circular
-                        onClick={() => this.props.handleDeleteFilter(filter.id)}/>
-                </Table.Cell>
-            </Table.Row>
-        ));
+                <Table.Row key={filter.id}>
+                    <Table.Cell className={styles.slider}>
+                        <InputRange
+                            disabled={!filter.active}
+                            draggableTrack
+                            step={0.1}
+                            minValue={Math.log10(1e3)}
+                            maxValue={Math.log10(1e9)}
+                            formatLabel={this.formatRangeLabel}
+                            value={{min: Math.log10(filter.min), max: Math.log10(filter.max)}}
+                            onChange={value => this.onFilterChange(filter.id, value)}/>
+                    </Table.Cell>
+                    <Table.Cell collapsing>
+                        <Button icon="eye slash" basic={filter.active} circular
+                            onClick={() => this.props.handleToggleFilter(filter.id)}/>
+                        <Button icon='trash alternate' basic circular
+                            onClick={() => this.props.handleDeleteFilter(filter.id)}/>
+                    </Table.Cell>
+                </Table.Row>
+            ));
 
         const emptyMessage = (
             "No filters set up. You are currently seeing the whole spectrum."

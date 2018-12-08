@@ -3,6 +3,7 @@
 *******************************/
 
 @teal: #00ccbe;
+@black: #27273f;
 
 @primaryColor: @teal;
 @backgroundColor: #1e2e4a;
