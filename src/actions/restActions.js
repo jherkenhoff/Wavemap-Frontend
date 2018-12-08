@@ -16,9 +16,10 @@ export function fetchDatasets() {
     }
 }
 
-export function fetchData(dataset_id, subset_id) {
-    return (dispatch) => {
-        fetch(restServerDomain + "/api/v1/datasets/" + dataset_id + "/subsets/" + subset_id + "/preprocessed?preprocessor=average")
+export function fetchData() {
+    return (dispatch, getState) => {
+        const { selectedDataset, selectedSubset } = getState().setup
+        fetch(restServerDomain + "/api/v1/datasets/" + selectedDataset + "/subsets/" + selectedSubset + "/preprocessed?preprocessor=average")
             .then( (resp) => resp.json() )
             .then( (data) => {
                 dispatch(updateData(data))

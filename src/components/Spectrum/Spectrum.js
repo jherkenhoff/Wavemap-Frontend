@@ -1,6 +1,5 @@
 import React from 'react';
 import { AreaClosed, LinePath, Line, Bar } from '@vx/shape';
-import { appleStock } from '@vx/mock-data';
 import { curveMonotoneX } from '@vx/curve';
 import { GridRows, GridColumns } from '@vx/grid';
 import { scaleLog, scaleLinear } from '@vx/scale';
@@ -12,18 +11,14 @@ import { LinearGradient } from '@vx/gradient';
 import { PatternLines } from '@vx/pattern';
 import { localPoint } from '@vx/event';
 import { bisector } from 'd3-array';
-import { timeFormat } from 'd3-time-format';
 
-const stock = appleStock.slice(800);
-
-// util
+// Util
 const min = (arr, fn) => Math.min(...arr.map(fn));
 const max = (arr, fn) => Math.max(...arr.map(fn));
-const extent = (arr, fn) => [min(arr, fn), max(arr, fn)];
 
-// accessors
-const xData = d => d.freq;
-const yData = d => d.mag;
+// Accessors
+const getFreq = d => d.freq;
+const getMag = d => d.mag;
 const bisectFreq = bisector(d => d.freq).left;
 
 // Formatter
@@ -50,16 +45,16 @@ class Area extends React.Component {
         this.padding = 30
     }
 
-    handleTooltip({ event, data, xData, xScale, yScale }) {
+    handleTooltip({ event, spectrum, getFreq, xScale, yScale }) {
         const { showTooltip } = this.props;
         const { x } = localPoint(event);
         const x0 = xScale.invert(x-this.margin.left);
-        const index = bisectFreq(data, x0, 1);
-        const d0 = data[index - 1];
-        const d1 = data[index];
+        const index = bisectFreq(spectrum, x0, 1);
+        const d0 = spectrum[index - 1];
+        const d1 = spectrum[index];
         let d = d0;
         if (d1 && d1.mag) {
-            d = x0 - xData(d0.mag) > xData(d1.mag) - x0 ? d1 : d0;
+            d = x0 - getFreq(d0.mag) > getFreq(d1.mag) - x0 ? d1 : d0;
         }
         showTooltip({
             tooltipData: d,
@@ -70,7 +65,7 @@ class Area extends React.Component {
 
     render() {
         const {
-            data,
+            spectrum,
             parentWidth,
             parentHeight,
             tooltipData,
@@ -92,27 +87,116 @@ class Area extends React.Component {
         const plotYMax = yMax - brushHeight - padding;
 
         // Find extrema
-        const minMag = min(data, yData)
-        const maxMag = max(data, yData)
+        let extrema = {}
+        if (spectrum == undefined) {
+            extrema.minMag = -80
+            extrema.maxMag = -20
+            extrema.minFreq = 1e6
+            extrema.maxFreq = 1e9
+        } else {
+            extrema.minMag = min(spectrum, getMag)
+            extrema.maxMag = max(spectrum, getMag)
+            extrema.minFreq = min(spectrum, getFreq)
+            extrema.maxFreq = max(spectrum, getFreq)
+        }
 
         // scales
         const xScale = scaleLog({
           range: [0, xMax],
-          domain: extent(data, xData)
+          domain: [extrema.minFreq, extrema.maxFreq]
         });
         const plotYScale = scaleLinear({
           range: [plotYMax, 0],
-          domain: [minMag, maxMag],
+          domain: [extrema.minMag, extrema.maxMag],
           nice: true
         });
         const brushYScale = scaleLinear({
           range: [brushHeight, 0],
-          domain: [minMag, maxMag],
+          domain: [extrema.minMag, extrema.maxMag],
           nice: true
         });
 
         // Formatter
         let xFormatter = xScale.tickFormat(0, ".0s")
+
+        const mainPlot = (
+            <>
+                <AreaClosed
+                    stroke="transparent"
+                    data={spectrum}
+                    x={d => xScale(getFreq(d))}
+                    y={d => plotYScale(getMag(d))}
+                    yScale={plotYScale}
+                    fill="url(#fill)"
+                    />
+                <AreaClosed
+                    stroke="transparent"
+                    data={spectrum}
+                    x={d => xScale(getFreq(d))}
+                    y={d => plotYScale(getMag(d))}
+                    yScale={plotYScale}
+                    fill="url(#dLines)"
+                    />
+                <LinePath
+                    data={spectrum}
+                    x={d => xScale(getFreq(d))}
+                    y={d => plotYScale(getMag(d))}
+                    stroke="#FFF"
+                    strokeOpacity="1"
+                    strokeWidth={1}
+                    />
+                <Line
+                    from={{ x: 0, y: plotYScale(extrema.maxMag) }}
+                    to={{ x: xMax, y: plotYScale(extrema.maxMag) }}
+                    stroke="#fff"
+                    strokeDasharray="4"
+                    strokeWidth={1}
+                    style={{ pointerEvents: 'none' }}
+                    />
+            </>
+        )
+
+        const brushPlot = (
+            <>
+                <AreaClosed
+                    stroke="transparent"
+                    data={spectrum}
+                    x={d => xScale(getFreq(d))}
+                    y={d => brushYScale(getMag(d))}
+                    yScale={brushYScale}
+                    fill="url(#fill)"
+                    />
+                <AreaClosed
+                    stroke="transparent"
+                    data={spectrum}
+                    x={d => xScale(getFreq(d))}
+                    y={d => brushYScale(getMag(d))}
+                    yScale={brushYScale}
+                    fill="url(#dLines)"
+                    />
+                <LinePath
+                    data={spectrum}
+                    x={d => xScale(getFreq(d))}
+                    y={d => brushYScale(getMag(d))}
+                    stroke="#FFF"
+                    strokeOpacity="1"
+                    strokeWidth={1}
+                    />
+            </>
+        )
+
+        const emptyMessage = (
+            <text
+                x={xMax/2}
+                y={plotYMax/2}
+                textAnchor="middle"
+                fontSize={20}
+                fill="white"
+                >
+                Set marker on map
+
+            </text>
+        )
 
         return (
             <div>
@@ -121,8 +205,8 @@ class Area extends React.Component {
                         id="fill"
                         from="#fff"
                         to="#fff"
-                        fromOpacity={0.2}
-                        toOpacity={0.0}
+                        fromOpacity={0.4}
+                        toOpacity={0.1}
                         />
                     <PatternLines
                         id="dLines"
@@ -134,44 +218,20 @@ class Area extends React.Component {
                         />
 
                     <Group top={margin.top}>
-                        <GridRows
-                            width={width}
-                            height={plotYMax}
-                            scale={plotYScale}
-                            stroke="rgba(255,255,255,0.2)"
-                            />
                         <Group left={margin.left}>
+                            <GridRows
+                                width={xMax}
+                                height={plotYMax}
+                                scale={plotYScale}
+                                stroke="rgba(255,255,255,0.2)"
+                                />
                             <GridColumns
-                                width={width}
+                                width={xMax}
                                 height={plotYMax}
                                 scale={xScale}
-                                stroke="rgba(255,255,255,0.1)"
+                                stroke="rgba(255,255,255,0.2)"
                                 />
-                            <AreaClosed
-                                stroke="transparent"
-                                data={data}
-                                x={d => xScale(xData(d))}
-                                y={d => plotYScale(yData(d))}
-                                yScale={plotYScale}
-                                fill="url(#fill)"
-                                />
-                            <AreaClosed
-                                stroke="transparent"
-                                data={data}
-                                x={d => xScale(xData(d))}
-                                y={d => plotYScale(yData(d))}
-                                yScale={plotYScale}
-                                fill="url(#dLines)"
-                                />
-                            <LinePath
-                                data={data}
-                                x={d => xScale(xData(d))}
-                                y={d => plotYScale(yData(d))}
-                                yScale={plotYScale}
-                                stroke="#FFF"
-                                strokeOpacity="1"
-                                strokeWidth={1}
-                                />
+                            {spectrum!=undefined? mainPlot:undefined}
                             <AxisBottom
                                 scale={xScale}
                                 top={plotYMax}
@@ -186,14 +246,11 @@ class Area extends React.Component {
 
                                     })}
                                 />
-                            <text x={xMax-5} y={plotYMax-5} fontSize={10} textAnchor="end" fill="white">
-                                Frequency / Hz &rarr;
-                            </text>
 
                             <AxisLeft
-                                hideTicks
-                                hideAxisLine
                                 scale={plotYScale}
+                                stroke="rgba(255,255,255,0.5)"
+                                tickStroke="rgba(255,255,255,0.5)"
                                 tickLabelProps={(value, index) => ({
                                         fill: "white",
                                         fillOpacity: 0.8,
@@ -202,79 +259,55 @@ class Area extends React.Component {
 
                                     })}
                                 />
-                            <text x={-5} y={15} transform="rotate(-90)" fontSize={10} textAnchor="end" fill="white">
-                                RF Power / dBm &rarr;
-                            </text>
+
+                            {spectrum == undefined? emptyMessage:undefined}
 
 
 
-                            <Bar
+                            {spectrum == undefined? undefined:<Bar
                                 x={0}
                                 y={0}
                                 width={xMax}
                                 height={plotYMax}
                                 fill="transparent"
                                 rx={14}
-                                data={data}
+                                data={spectrum}
                                 onTouchStart={event =>
                                     this.handleTooltip({
                                         event,
-                                        xData,
+                                        getFreq,
                                         xScale,
                                         yScale: plotYScale,
-                                        data
+                                        spectrum
                                     })
                                 }
                                 onTouchMove={event =>
                                     this.handleTooltip({
                                         event,
-                                        xData,
+                                        getFreq,
                                         xScale,
                                         yScale: plotYScale,
-                                        data
+                                        spectrum
                                     })
                                 }
                                 onMouseMove={event =>
                                     this.handleTooltip({
                                         event,
-                                        xData,
+                                        getFreq,
                                         xScale,
                                         yScale: plotYScale,
-                                        data: data
+                                        spectrum: spectrum
                                     })
                                 }
                                 onMouseLeave={event => hideTooltip()}
                                 />
+                            }
                         </Group>
                     </Group>
 
                     <Group top={height-margin.bottom-brushHeight}>
                         <Group left={margin.left}>
-                            <AreaClosed
-                                stroke="transparent"
-                                data={data}
-                                x={d => xScale(xData(d))}
-                                y={d => brushYScale(yData(d))}
-                                yScale={brushYScale}
-                                fill="url(#fill)"
-                                />
-                            <AreaClosed
-                                stroke="transparent"
-                                data={data}
-                                x={d => xScale(xData(d))}
-                                y={d => brushYScale(yData(d))}
-                                yScale={brushYScale}
-                                fill="url(#dLines)"
-                                />
-                            <LinePath
-                                data={data}
-                                x={d => xScale(xData(d))}
-                                y={d => brushYScale(yData(d))}
-                                yScale={brushYScale}
-                                stroke="#FFF"
-                                strokeOpacity="1"
-                                strokeWidth={1}
-                                />
+                            {spectrum!=undefined? brushPlot:undefined}
                             <AxisBottom
                                 scale={xScale}
                                 top={brushHeight}
@@ -335,20 +368,22 @@ class Area extends React.Component {
                             top={tooltipTop - 12 + this.margin.top}
                             left={tooltipLeft + 12}
                             style={{
-                                    backgroundColor: 'rgba(92, 119, 235, 1.000)',
+                                    backgroundColor: "#333",
                                     color: 'white'
                                 }}
                             >
-                            {`${yData(tooltipData).toFixed(2)} dBm`}
+                            {`${getMag(tooltipData).toFixed(2)} dBm`}
                         </Tooltip>
                         <Tooltip
                             top={plotYMax - 14 + this.margin.top}
                             left={tooltipLeft}
                             style={{
+                                color: "white",
+                                backgroundColor: "#333",
                                 transform: 'translateX(-50%)'
                             }}
                             >
-                            {formatSiPrefix(xData(tooltipData))}
+                            {formatSiPrefix(getFreq(tooltipData))}
                         </Tooltip>
                     </div>
                 )}

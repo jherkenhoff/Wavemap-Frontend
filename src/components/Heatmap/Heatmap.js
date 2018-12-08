@@ -67,7 +67,7 @@ class MapPreview extends Component {
                     blur={10}
                     maxZoom={10}
                     max={1.0}
-                    gradient={{0.0: "green", 0.5:"yellow", 1.0:"red"}}/>
+                    gradient={{0.0: "#6FB5DB", 1.0:"#7E4B95"}}/>
                 <TileLayer
                   attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                   //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
