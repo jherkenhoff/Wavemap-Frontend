@@ -1,5 +1,7 @@
-import { updateDatasets, updateData, updateSelectedSample, updateMarkerLoading } from "./dataActions"
+import { updateDatasets, updateData, updateSelectedSample, updateMarkerLoading, shiftSetup } from "./dataActions"
 import { setMarkerPosition } from "./mapActions"
+
+export const UPDATE_PROGRESS = "UPDATE_PROGRESS"
 
 const restServerDomain = "http://" + document.domain + ":5000"
 
@@ -18,15 +20,23 @@ export function fetchDatasets() {
 
 export function fetchData() {
     return (dispatch, getState) => {
-        const { selectedDataset, selectedSubset } = getState().setup
-        fetch(restServerDomain + "/api/v1/datasets/" + selectedDataset + "/subsets/" + selectedSubset + "/preprocessed?preprocessor=average")
-            .then( (resp) => resp.json() )
-            .then( (data) => {
-                dispatch(updateData(data))
-            })
-            .catch( (error) => {
-                console.error(error);
-            })
+        const { selectedDataset, selectedSubset } = getState().newSetup
+
+        let req = new XMLHttpRequest();
+        req.open('GET', restServerDomain + "/api/v1/datasets/" + selectedDataset + "/subsets/" + selectedSubset + "/preprocessed?preprocessor=average", true);
+        req.onprogress = () => dispatch(updateProgress(true, 80, "Downloading data"));
+        req.onloadstart = () => dispatch(updateProgress(true, 40, "Preprocessing data"));
+        req.onloadend = dispatch(updateProgress(false, 100, ""));
+        req.onreadystatechange = (e) => {
+            if (e.target.readyState == 4) {
+                dispatch(updateData(JSON.parse(e.target.response)))
+                dispatch(updateProgress(false, 100, "Done"));
+                dispatch(shiftSetup())
+            } else {
+                console.error(e);
+            }
+        };
+        req.send();
     }
 }
 
@@ -40,9 +50,9 @@ export function setMarker(sample_id) {
 
         dispatch(updateMarkerLoading(true))
 
-        const { setup } = getState();
+        const { newSetup, currentSetup } = getState();
 
-        fetch(restServerDomain + "/api/v1/datasets/" + setup.selectedDataset + "/subsets/" + setup.selectedSubset + "/samples/" + sample_id)
+        fetch(restServerDomain + "/api/v1/datasets/" + newSetup.selectedDataset + "/subsets/" + newSetup.selectedSubset + "/samples/" + sample_id)
             .then( (resp) => resp.json() )
             .then( (data) => {
                 dispatch(updateSelectedSample(data))
@@ -51,5 +61,16 @@ export function setMarker(sample_id) {
             .catch( (error) => {
                 console.error(error);
             })
+    }
+}
+
+function updateProgress(loading, percent, text) {
+    return {
+        type: UPDATE_PROGRESS,
+        progress: {
+            loading,
+            percent,
+            text
+        }
     }
 }

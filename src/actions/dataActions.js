@@ -1,7 +1,7 @@
 export const UPDATE_DATASETS = "UPDATE_DATASETS"
 export const UPDATE_DATA = "UPDATE_DATA"
 export const SELECT_DATASET = "SELECT_DATASET"
-export const SELECT_SUBSET = "SELECT_SUBSET"
+export const SHIFT_SETUP = "SHIFT_SETUP"
 export const UPDATE_SELECTED_SAMPLE = "UPDATE_SELECTED_SAMPLE"
 export const UPDATE_MARKER_LOADING = "UPDATE_MARKER_LOADING"
 
@@ -19,17 +19,11 @@ export function updateData(data) {
     }
 }
 
-export function selectDataset(selected) {
+export function selectDataset(selectedDataset, selectedSubset) {
     return {
         type: SELECT_DATASET,
-        selected
-    }
-}
-
-export function selectSubset(selected) {
-    return {
-        type: SELECT_SUBSET,
-        selected
+        selectedDataset,
+        selectedSubset
     }
 }
 
@@ -44,5 +38,11 @@ export function updateMarkerLoading(loading) {
     return {
         type: UPDATE_MARKER_LOADING,
         loading: loading
+    }
+}
+
+export function shiftSetup() {
+    return {
+        type: SHIFT_SETUP
     }
 }

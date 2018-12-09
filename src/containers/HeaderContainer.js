@@ -1,37 +1,39 @@
 import { connect } from 'react-redux'
 import { Header } from 'components'
-import { changeFreqFilter, deleteFreqFilter, addFreqFilter, toggleFreqFilter, fetchData, selectDataset, selectSubset, setMarker } from 'actions'
+import { changeFreqFilter, deleteFreqFilter, addFreqFilter, toggleFreqFilter, fetchData, fetchDatasets, selectDataset, setMarker } from 'actions'
 
 const mapStateToProps = state => {
     return {
         datasets: state.datasets,
-        setup: state.setup,
+        setup: state.newSetup,
+        setupChanged: JSON.stringify(state.newSetup) !== JSON.stringify(state.currentSetup),
+        loading: state.progress.loading
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        handleSelectDataset: (dataset_id) => {
-            dispatch(selectDataset(dataset_id));
+        fetchDatasets: () => {
+            dispatch(fetchDatasets());
         },
-        handleSelectSubset: (subset_id) => {
-            dispatch(selectSubset(subset_id));
+        selectDataset: (selectedDataset, selectSubset) => {
+            dispatch(selectDataset(selectedDataset, selectSubset));
         },
         fetchData: () => {
             dispatch(fetchData());
         },
-            handleFilterChange: (id, min, max) => {
-                dispatch(changeFreqFilter(id, min, max));
-            },
-            handleDeleteFilter: (id) => {
-                dispatch(deleteFreqFilter(id));
-            },
-            handleAddFilter: (min, max) => {
-                dispatch(addFreqFilter(min, max));
-            },
-            handleToggleFilter: (id) => {
-                dispatch(toggleFreqFilter(id));
-            },
+        handleFilterChange: (id, min, max) => {
+            dispatch(changeFreqFilter(id, min, max));
+        },
+        handleDeleteFilter: (id) => {
+            dispatch(deleteFreqFilter(id));
+        },
+        handleAddFilter: (min, max) => {
+            dispatch(addFreqFilter(min, max));
+        },
+        handleToggleFilter: (id) => {
+            dispatch(toggleFreqFilter(id));
+        },
     }
 }
 

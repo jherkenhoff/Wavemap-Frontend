@@ -31,18 +31,31 @@ class MapPreview extends Component {
         }
 
         this.handleMarkerDragEnd = this.handleMarkerDragEnd.bind(this);
+        this.handleMapClick = this.handleMapClick.bind(this);
+        this.findNearest = this.findNearest.bind(this);
     }
 
     handleMarkerDragEnd(e) {
+        this.findNearest(e.target._latlng.lat, e.target._latlng.lng)
+    }
+
+    handleMapClick(e) {
+        this.findNearest(e.latlng.lat, e.latlng.lng)
+    }
+
+    findNearest(lat, lng) {
         var knnLookup = sphereKnn(this.props.data)
-        var nearest = knnLookup(e.target._latlng.lat, e.target._latlng.lng, 1, 100)
+        var nearest = knnLookup(lat, lng, 1, 100)
         if (nearest.length != 0) {
+            this.props.setMarker(nearest[0].id)
             this.setState({
                 markerPos: [nearest[0].lat, nearest[0].lon]
             })
-            this.props.setMarker(nearest[0].id)
         } else {
             this.props.setMarker(undefined)
+            this.setState({
+                markerPos: [lat, lng]
+            })
         }
     }
 
@@ -72,7 +85,11 @@ class MapPreview extends Component {
         };
 
         return (
-            <Map center={center} zoom={16} className={styles.map}>
+            <Map
+                center={center}
+                zoom={16}
+                className={styles.map}
+                onClick={this.handleMapClick}>
                 <TileLayer
                   attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                   //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -86,11 +103,7 @@ class MapPreview extends Component {
                     icon={myIcon}
                     draggable
                     autoPan
-                    onDragend={this.handleMarkerDragEnd}>
-                    <Popup>
-                        A pretty CSS3 popup. <br /> Easily customizable.
-                    </Popup>
-                </Marker>
+                    onDragend={this.handleMarkerDragEnd}/>
                 <HexbinLayer data={normalizedSamples} {...options} />
                 <Control position="topright" >
                     <MarkerOverlay marker={this.props.marker}/>

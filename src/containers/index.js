@@ -1,3 +1,3 @@
 export HeaderContainer from './HeaderContainer'
-export AppContainer from './AppContainer'
+export ProgressBarContainer from './ProgressBarContainer'
 export HeatmapContainer from './HeatmapContainer'
