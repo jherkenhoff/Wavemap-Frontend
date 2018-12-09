@@ -98,7 +98,7 @@ class FilterSetup extends Component {
 
 
         return (
-            <CollapseableSegment header="Filter" icon="filter" additional={filterDropdown}>
+            <div  className={styles.filterSetup}>
                 <Table basic="very">
                     <Table.Body>
                         {filterEntries}
@@ -107,12 +107,12 @@ class FilterSetup extends Component {
                                 {(filterEntries.length == 0) && emptyMessage}
                             </Table.Cell>
                             <Table.Cell collapsing textAlign="right">
-                                <Button icon='plus' basic circular positive onClick={() => this.props.handleAddFilter(1e4, 1e6)}/>
+                                <Button icon='plus' basic circular color="olive" onClick={() => this.props.handleAddFilter(1e4, 1e6)}/>
                             </Table.Cell>
                         </Table.Row>
                     </Table.Body>
                 </Table>
-            </CollapseableSegment>
+            </div>
         )
     }
 }

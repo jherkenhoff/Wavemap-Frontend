@@ -80,7 +80,7 @@ class MapPreview extends Component {
 
         const options = {
             colorScaleExtent: [0,1],
-            colorRange: ['#A0E9FF', '#FF4100'],
+            colorRange: ['#FFF', '#db8330'],
             opacity: 1.0
         };
 

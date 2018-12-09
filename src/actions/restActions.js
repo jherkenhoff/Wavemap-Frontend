@@ -3,7 +3,7 @@ import { setMarkerPosition } from "./mapActions"
 
 export const UPDATE_PROGRESS = "UPDATE_PROGRESS"
 
-const restServerDomain = "http://" + document.domain + ":5000"
+const restServerDomain = "http://dl0ht-2.fk4.hs-bremen.de:33680" //location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
 
 export function fetchDatasets() {
     return (dispatch) => {
@@ -24,9 +24,8 @@ export function fetchData() {
 
         let req = new XMLHttpRequest();
         req.open('GET', restServerDomain + "/api/v1/datasets/" + selectedDataset + "/subsets/" + selectedSubset + "/preprocessed?preprocessor=average", true);
-        req.onprogress = () => dispatch(updateProgress(true, 80, "Downloading data"));
-        req.onloadstart = () => dispatch(updateProgress(true, 40, "Preprocessing data"));
-        req.onloadend = dispatch(updateProgress(false, 100, ""));
+        req.onprogress = (e) => dispatch(updateProgress(true, 30+e.loaded/e.total*70, "Downloading data"));
+        req.onloadstart = () => dispatch(updateProgress(true, 30, "Preprocessing data"));
         req.onreadystatechange = (e) => {
             if (e.target.readyState == 4) {
                 dispatch(updateData(JSON.parse(e.target.response)))
