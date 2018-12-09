@@ -66,8 +66,8 @@ class Area extends React.Component {
     render() {
         const {
             spectrum,
-            parentWidth,
-            parentHeight,
+            parentWidth = 500,
+            parentHeight = 300,
             tooltipData,
             tooltipLeft,
             tooltipTop,
@@ -193,8 +193,7 @@ class Area extends React.Component {
                 fontSize={20}
                 fill="white"
                 >
-                Set marker on map
-
+                Place marker on datapoint
             </text>
         )
 
@@ -340,11 +339,11 @@ class Area extends React.Component {
                             <circle
                                 cx={tooltipLeft}
                                 cy={tooltipTop + 1}
-                                r={4}
+                                r={5}
                                 fill="black"
-                                fillOpacity={0.1}
+                                fillOpacity={0.2}
                                 stroke="black"
-                                strokeOpacity={0.1}
+                                strokeOpacity={0.2}
                                 strokeWidth={2}
                                 style={{ pointerEvents: 'none' }}
                                 />
@@ -352,7 +351,7 @@ class Area extends React.Component {
                                 cx={tooltipLeft}
                                 cy={tooltipTop}
                                 r={4}
-                                fill="rgba(92, 119, 235, 1.000)"
+                                fill="#dae783"
                                 stroke="white"
                                 strokeWidth={2}
                                 style={{ pointerEvents: 'none' }}
@@ -392,4 +391,4 @@ class Area extends React.Component {
     }
 }
 
-export default withParentSize(withTooltip(Area));
+export default withTooltip(Area);

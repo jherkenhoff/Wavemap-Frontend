@@ -1,16 +1,25 @@
 import React, { Component } from "react"
-import { Map, TileLayer, Marker } from "react-leaflet"
-import HeatmapLayer from "react-leaflet-heatmap-layer"
-import { BarChart, Bar, Brush, ReferenceLine, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Area, AreaChart } from 'recharts';
-import { Header, Menu, Dropdown, Icon, Label, Segment, Dimmer } from 'semantic-ui-react'
+import { Map, TileLayer, Marker, Popup } from "react-leaflet"
+import L from "leaflet";
 import Control from 'react-leaflet-control';
-import { HexbinLayer }  from "react-leaflet-d3";
-import { Spectrum, MarkerOverlay } from "components"
+import { MarkerOverlay } from "components"
+import HexbinLayer from "./HexbinLayer"
 import sphereKnn from "sphere-knn"
 import * as styles from "./Heatmap.less"
-import testData  from "./data.js"
+import * as iconImage from "./icon.png"
+import * as shadowImage from "./icon-shadow.png"
 
 const center = [53.07, 8.793]
+
+const myIcon = L.icon({
+    iconUrl: iconImage,
+    iconSize: [57, 45],
+    iconAnchor: [35, 45],
+    popupAnchor: [0, -50],
+    shadowUrl: shadowImage,
+    shadowSize: [57, 45],
+    shadowAnchor: [35, 45]
+});
 
 class MapPreview extends Component {
 
@@ -56,27 +65,33 @@ class MapPreview extends Component {
 
         let normalizedSamples = this.normalizeSamples(this.props.data)
 
+        const options = {
+            colorScaleExtent: [0,1],
+            colorRange: ['#A0E9FF', '#FF4100'],
+            opacity: 1.0
+        };
+
         return (
             <Map center={center} zoom={16} className={styles.map}>
-                <HeatmapLayer
-                    points={normalizedSamples}
-                    latitudeExtractor={m => m.lat}
-                    longitudeExtractor={m => m.lon}
-                    intensityExtractor={m => m.value}
-                    radius={10}
-                    blur={10}
-                    maxZoom={10}
-                    max={1.0}
-                    gradient={{0.0: "#6FB5DB", 1.0:"#7E4B95"}}/>
                 <TileLayer
                   attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                   //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  //url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                   url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                  opacity={0.8}
+                  opacity={1.0}
                 />
 
-                <Marker position={this.state.markerPos} draggable autoPan onDragend={this.handleMarkerDragEnd}/>
-
+                <Marker
+                    position={this.state.markerPos}
+                    icon={myIcon}
+                    draggable
+                    autoPan
+                    onDragend={this.handleMarkerDragEnd}>
+                    <Popup>
+                        A pretty CSS3 popup. <br /> Easily customizable.
+                    </Popup>
+                </Marker>
+                <HexbinLayer data={normalizedSamples} {...options} />
                 <Control position="topright" >
                     <MarkerOverlay marker={this.props.marker}/>
                 </Control>
