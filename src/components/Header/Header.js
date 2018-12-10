@@ -19,6 +19,8 @@ class Header extends Component {
     render() {
 
         let datasetSelected = this.props.setup.selectedDataset != undefined && this.props.setup.selectedSubset != undefined
+        let selectedDataset = this.props.setup.selectedDataset
+        let selectedSubset = this.props.setup.selectedSubset
         let availableFilters = this.props.setup.filters.length
         let activeFilters = this.props.setup.filters.filter( (d) => d.active).length
 
@@ -33,7 +35,7 @@ class Header extends Component {
                         pointing
                         icon={null}
                         trigger={
-                                <Step link completed={datasetSelected}>
+                                <Step link>
                                     <Icon name='database'/>
                                     <Step.Content>
                                         <Step.Title>Dataset</Step.Title>
@@ -83,6 +85,7 @@ class Header extends Component {
                         content={
                             <FilterSetup
                                 setup={this.props.setup}
+                                freqBins={datasetSelected? this.props.datasets[selectedDataset].subsets[selectedSubset].freqBins:undefined}
                                 handleFilterChange={this.props.handleFilterChange}
                                 handleDeleteFilter={this.props.handleDeleteFilter}
                                 handleAddFilter={this.props.handleAddFilter}
@@ -98,12 +101,12 @@ class Header extends Component {
                                 <Step.Content>
                                     <Step.Title>Preprocessor</Step.Title>
                                     <Step.Description>
-                                        Method: Average
+                                        Method: {this.props.setup.preprocessor}
                                     </Step.Description>
                                 </Step.Content>
                             </Step>
                         }
-                        content={<PreprocessorSetup/>}
+                        content={<PreprocessorSetup setup={this.props.setup} selectPreprocessor={this.props.selectPreprocessor}/>}
                         on='click'
                         position='bottom center'
                         />

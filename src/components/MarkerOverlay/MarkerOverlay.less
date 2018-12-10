@@ -1,7 +1,8 @@
 @import '~heading.less';
 
 .overlay {
-    background-image: linear-gradient(to bottom right, #6FB5DB, #7E4B95);
+    //background-image: linear-gradient(to bottom right, #6FB5DB, #7E4B95);
+    background-image: linear-gradient(to bottom right, #CBA039, #9F5A2F);
     color: white;
     opacity: 0.9;
     transition: opacity 0.5s;
@@ -36,16 +37,20 @@
 .topbar {
     height: 70px;
     margin-right: 70px;
+    padding-right: 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 
     .title {
+        margin-top: 8px;
         font-size: 25px;
         line-height: 25px;
+        margin-right: 40px;
     }
 
     .clock {
+        line-height: 12px;
         color: white;
     }
 }

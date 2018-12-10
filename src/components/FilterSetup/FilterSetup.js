@@ -15,34 +15,35 @@ class FilterSetup extends Component {
         this.onExamplePreset = this.onExamplePreset.bind(this);
     }
 
-    formatRangeLabel(value) {
-        var tempValue = 10**value
+    getFormattedFreq(value) {
+        var freq = this.props.freqBins[value]
+
         var unit = ""
-        if (tempValue >= 1e9) {
-            tempValue = tempValue / 1e9
+        if (freq >= 1e9) {
+            freq = freq / 1e9
             unit = "GHz"
-        } else if (tempValue >= 1e6) {
-            tempValue = tempValue / 1e6
+        } else if (freq >= 1e6) {
+            freq = freq / 1e6
             unit = "MHz"
-        } else if (tempValue >= 1e3) {
-            tempValue = tempValue / 1e3
+        } else if (freq >= 1e3) {
+            freq = freq / 1e3
             unit = "kHz"
         } else {
-            tempValue = tempValue
+            freq = freq
             unit = "Hz"
         }
 
-        if (tempValue >= 100) {
-            tempValue = tempValue.toFixed(0)
+        if (freq >= 100) {
+            freq = freq.toFixed(0)
         } else {
-            tempValue = tempValue.toFixed(1)
+            freq = freq.toFixed(1)
         }
 
-        return tempValue + " " + unit
+        return freq + " " + unit
     }
 
     onFilterChange(id, value) {
-        this.props.handleFilterChange(id, 10**value.min, 10**value.max)
+        this.props.handleFilterChange(id, value.min, value.max)
     }
 
     onExamplePreset() {
@@ -52,18 +53,21 @@ class FilterSetup extends Component {
     }
 
     render() {
+
+        const { freqBins } = this.props
+
         var filterEntries = this.props.setup.filters.map((filter) => (
                 <Table.Row key={filter.id}>
                     <Table.Cell className={styles.slider}>
                         <InputRange
                             disabled={!filter.active}
                             draggableTrack
-                            step={0.1}
-                            minValue={Math.log10(1e3)}
-                            maxValue={Math.log10(1e9)}
-                            formatLabel={this.formatRangeLabel}
-                            value={{min: Math.log10(filter.min), max: Math.log10(filter.max)}}
-                            onChange={value => this.onFilterChange(filter.id, value)}/>
+                            step={1}
+                            minValue={0}
+                            maxValue={freqBins.length-1}
+                            formatLabel={ (value) => this.getFormattedFreq(value) }
+                            value={{min: filter.min, max: filter.max}}
+                            onChange={ (value) => this.onFilterChange(filter.id, value) }/>
                     </Table.Cell>
                     <Table.Cell collapsing>
                         <Button icon="eye slash" basic={filter.active} circular
@@ -107,7 +111,7 @@ class FilterSetup extends Component {
                                 {(filterEntries.length == 0) && emptyMessage}
                             </Table.Cell>
                             <Table.Cell collapsing textAlign="right">
-                                <Button icon='plus' basic circular color="olive" onClick={() => this.props.handleAddFilter(1e4, 1e6)}/>
+                                <Button icon='plus' basic circular color="olive" onClick={() => this.props.handleAddFilter(freqBins.length*0.3, freqBins.length*0.7)}/>
                             </Table.Cell>
                         </Table.Row>
                     </Table.Body>

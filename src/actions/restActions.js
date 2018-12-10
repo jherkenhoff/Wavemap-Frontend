@@ -3,7 +3,7 @@ import { setMarkerPosition } from "./mapActions"
 
 export const UPDATE_PROGRESS = "UPDATE_PROGRESS"
 
-const restServerDomain = "http://dl0ht-2.fk4.hs-bremen.de:33680" //location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+const restServerDomain = "http://localhost:5000" //"http://dl0ht-2.fk4.hs-bremen.de:33680" //location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
 
 export function fetchDatasets() {
     return (dispatch) => {
@@ -20,10 +20,16 @@ export function fetchDatasets() {
 
 export function fetchData() {
     return (dispatch, getState) => {
-        const { selectedDataset, selectedSubset } = getState().newSetup
+        const { selectedDataset, selectedSubset, filters, preprocessor } = getState().newSetup
+
 
         let req = new XMLHttpRequest();
-        req.open('GET', restServerDomain + "/api/v1/datasets/" + selectedDataset + "/subsets/" + selectedSubset + "/preprocessed?preprocessor=average", true);
+        let url = restServerDomain + "/api/v1/datasets/" + selectedDataset + "/subsets/" + selectedSubset + "/preprocessed?preprocessor=" + preprocessor
+        for (var i = 0; i < filters.length; i++) {
+            if (filters[i].active)
+                url = url.concat("&filter=" + filters[i].min + ":" + filters[i].max)
+        }
+        req.open('GET', url, true);
         req.onprogress = (e) => dispatch(updateProgress(true, 30+e.loaded/e.total*70, "Downloading data"));
         req.onloadstart = () => dispatch(updateProgress(true, 30, "Preprocessing data"));
         req.onreadystatechange = (e) => {

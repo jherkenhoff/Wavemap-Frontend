@@ -1,11 +1,11 @@
-export const CHANGE_PREPROCESSOR_TYPE = "CHANGE_PREPROCESSOR_TYPE"
+export const SELECT_PREPROCESSOR = "SELECT_PREPROCESSOR"
 
 /*
  * action creators
  */
-export function changePreprocessorType(preprocessorType) {
+export function selectPreprocessor(preprocessor) {
     return {
-        type: CHANGE_PREPROCESSOR_TYPE,
-        preprocessorType
+        type: SELECT_PREPROCESSOR,
+        preprocessor
     }
 }

@@ -5,7 +5,8 @@ import { setMarker } from 'actions'
 const mapStateToProps = state => {
     return {
         data: state.data,
-        marker: state.marker
+        marker: state.marker,
+        filters: state.newSetup.filters
     }
 }
 

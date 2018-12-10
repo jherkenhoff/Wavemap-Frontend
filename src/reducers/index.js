@@ -1,4 +1,4 @@
-import { UPDATE_DATASETS, CHANGE_FREQ_FILTER, DELETE_FREQ_FILTER, ADD_FREQ_FILTER, UPDATE_DATA, SELECT_DATASET, SELECT_SUBSET, SET_MARKER_POSITION, TOGGLE_FILTER, CHANGE_PREPROCESSOR_TYPE, UPDATE_SELECTED_SAMPLE, UPDATE_MARKER_LOADING, UPDATE_PROGRESS, SHIFT_SETUP } from "actions"
+import { UPDATE_DATASETS, CHANGE_FREQ_FILTER, DELETE_FREQ_FILTER, ADD_FREQ_FILTER, UPDATE_DATA, SELECT_DATASET, SELECT_SUBSET, SET_MARKER_POSITION, TOGGLE_FILTER, CHANGE_PREPROCESSOR_TYPE, UPDATE_SELECTED_SAMPLE, UPDATE_MARKER_LOADING, UPDATE_PROGRESS, SHIFT_SETUP, SELECT_PREPROCESSOR } from "actions"
 
 import uuid from "uuid"
 
@@ -7,12 +7,14 @@ const initialState = {
     newSetup: {
         selectedDataset: undefined,
         selectedSubset: undefined,
-        filters: []
+        filters: [],
+        preprocessor: "average"
     },
     currentSetup: {
         selectedDataset: undefined,
         selectedSubset: undefined,
-        filters: []
+        filters: [],
+        preprocessor: "average"
     },
     data: [],
     marker: {
@@ -45,6 +47,14 @@ export default function reducer(state = initialState, action) {
                     ...state.newSetup,
                     selectedDataset: action.selectedDataset,
                     selectedSubset: action.selectedSubset
+                }
+            }
+
+        case SELECT_PREPROCESSOR:
+            return { ...state,
+                newSetup: {
+                    ...state.newSetup,
+                    preprocessor: action.preprocessor
                 }
             }
 

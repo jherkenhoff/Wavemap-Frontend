@@ -22,9 +22,7 @@ class MarkerOverlay extends React.Component {
         this.handleTopCornerClick = this.handleTopCornerClick.bind(this);
 
         this.state = {
-            maximized: true,
-            width:500,
-            height:300
+            maximized: false
         }
     }
 
@@ -36,9 +34,11 @@ class MarkerOverlay extends React.Component {
     }
 
     render() {
-        let sample = this.props.marker.sample
-        let sampleAvailable = (sample != undefined)
-        let spectrum = sampleAvailable? sample.spectrum:undefined
+        const sample = this.props.marker.sample
+        const sampleAvailable = (sample != undefined)
+        const spectrum = sampleAvailable? sample.spectrum:undefined
+
+        const time = sampleAvailable? new Date(sample.time / 1000):new Date()
 
         return (
             <div className={[styles.overlay, this.state.maximized? styles.maximized:undefined].join(" ")}>
@@ -52,8 +52,8 @@ class MarkerOverlay extends React.Component {
                 </TopCorner>
                 <div className={styles.topbar}>
                     <div>
-                        <div className={styles.title}>Marker</div>
-                        <div className={styles.clock}>8.12.2018 17:54:23</div>
+                        <div className={styles.title}>{time.toLocaleTimeString()}</div>
+                        <div className={styles.clock}>{time.toLocaleDateString()}</div>
                     </div>
                     <Statistic.Group size="tiny" color="olive" inverted>
                         <Statistic>
@@ -72,7 +72,7 @@ class MarkerOverlay extends React.Component {
                 </div>
                 {this.state.maximized?
                     <>
-                        <Spectrum spectrum={spectrum}/>
+                        <Spectrum spectrum={spectrum} filters={this.props.filters}/>
                         <div className={styles.details}>
                             <table>
                                 <thead>

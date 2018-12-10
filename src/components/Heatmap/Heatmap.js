@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { Map, TileLayer, Marker, Popup } from "react-leaflet"
+import { Transition } from 'semantic-ui-react'
 import L from "leaflet";
 import Control from 'react-leaflet-control';
 import { MarkerOverlay } from "components"
@@ -45,7 +46,7 @@ class MapPreview extends Component {
 
     findNearest(lat, lng) {
         var knnLookup = sphereKnn(this.props.data)
-        var nearest = knnLookup(lat, lng, 1, 100)
+        var nearest = knnLookup(lat, lng, 1, 500)
         if (nearest.length != 0) {
             this.props.setMarker(nearest[0].id)
             this.setState({
@@ -76,11 +77,12 @@ class MapPreview extends Component {
 
     render() {
 
-        let normalizedSamples = this.normalizeSamples(this.props.data)
+        const normalizedSamples = this.normalizeSamples(this.props.data)
+        const markerSet = (this.props.marker.sample != undefined)
 
         const options = {
             colorScaleExtent: [0,1],
-            colorRange: ['#FFF', '#db8330'],
+            colorRange: ["#B5F12D", "#ea8342", 'red'],
             opacity: 1.0
         };
 
@@ -105,8 +107,12 @@ class MapPreview extends Component {
                     autoPan
                     onDragend={this.handleMarkerDragEnd}/>
                 <HexbinLayer data={normalizedSamples} {...options} />
-                <Control position="topright" >
-                    <MarkerOverlay marker={this.props.marker}/>
+                <Control position="topright">
+                    <Transition animation="fade left" visible={markerSet} duration={500}>
+                        <div>
+                            <MarkerOverlay marker={this.props.marker} filters={this.props.filters}/>
+                        </div>
+                    </Transition>
                 </Control>
             </Map>
         );

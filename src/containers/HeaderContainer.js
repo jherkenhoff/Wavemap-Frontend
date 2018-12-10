@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { Header } from 'components'
-import { changeFreqFilter, deleteFreqFilter, addFreqFilter, toggleFreqFilter, fetchData, fetchDatasets, selectDataset, setMarker } from 'actions'
+import { changeFreqFilter, deleteFreqFilter, addFreqFilter, toggleFreqFilter, fetchData, fetchDatasets, selectDataset, setMarker, selectPreprocessor } from 'actions'
 
 const mapStateToProps = state => {
     return {
@@ -34,6 +34,9 @@ const mapDispatchToProps = dispatch => {
         handleToggleFilter: (id) => {
             dispatch(toggleFreqFilter(id));
         },
+        selectPreprocessor: (preprocessor) => {
+            dispatch(selectPreprocessor(preprocessor));
+        }
     }
 }
 

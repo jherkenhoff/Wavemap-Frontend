@@ -66,7 +66,7 @@ class Area extends React.Component {
     render() {
         const {
             spectrum,
-            parentWidth = 500,
+            parentWidth = 550,
             parentHeight = 300,
             tooltipData,
             tooltipLeft,
@@ -155,6 +155,26 @@ class Area extends React.Component {
                     />
             </>
         )
+
+        const filterOverlay = this.props.filters.map( (filter) => {
+            if (spectrum == undefined) {
+                return undefined
+            } else if (filter.active == false) {
+                return undefined
+            } else {
+                return (
+                    <Bar
+                        width={xScale(spectrum[filter.max].freq) - xScale(spectrum[filter.min].freq)}
+                        height={brushHeight}
+                        x={xScale(spectrum[filter.min].freq)}
+                        y={0}
+                        fill="#ffffff40"
+                        strokeWidth={1}
+                        stroke="#ffffff80"
+                        />
+                )
+            }
+        })
 
         const brushPlot = (
             <>
@@ -306,6 +326,8 @@ class Area extends React.Component {
 
                     <Group top={height-margin.bottom-brushHeight}>
                         <Group left={margin.left}>
+
+                            {spectrum!=undefined? filterOverlay:undefined}
                             {spectrum!=undefined? brushPlot:undefined}
                             <AxisBottom
                                 scale={xScale}

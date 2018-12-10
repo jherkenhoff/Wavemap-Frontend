@@ -18,21 +18,17 @@ class PreprocessorSetup extends Component {
 
     constructor(props) {
         super(props);
-        this.onPreprocessorTypeChange = this.onPreprocessorTypeChange.bind(this);
-    }
-
-    onPreprocessorTypeChange(e) {
-
     }
 
     render() {
+        const { setup, selectPreprocessor } = this.props
 
         const options = [
-            {key: 0, value: "AVERAGE",         text: "Average", disabled: false},
-            {key: 1, value: "MIN",             text: "Min", disabled: true},
-            {key: 2, value: "MAX",             text: "Max", disabled: true},
-            {key: 3, value: "HISTOGRAM",       text: "Histogram", disabled: true},
-            {key: 4, value: "FIXED_THRESHOLD", text: "Fixed threshold", disabled: true},
+            {key: 0, value: "average",         text: "Average", disabled: false},
+            {key: 1, value: "min",             text: "Min", disabled: false},
+            {key: 2, value: "max",             text: "Max", disabled: false},
+            {key: 3, value: "histogram",       text: "Histogram", disabled: true},
+            {key: 4, value: "fixed_threshold", text: "Fixed threshold", disabled: true},
         ]
 
         return (
@@ -43,8 +39,9 @@ class PreprocessorSetup extends Component {
                     <Dropdown
                         placeholder="Select preprocessor"
                         selection
-                        options={options}
-                        value="AVERAGE"/>
+                        onChange={ (e, {value}) => selectPreprocessor(value) }
+                        value={setup.preprocessor}
+                        options={options}/>
                 </Form.Field>
             </Form>
             </div>

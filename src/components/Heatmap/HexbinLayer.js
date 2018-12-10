@@ -12,6 +12,8 @@ class HexbinLayer extends MapLayer {
             let values = arr.map( d => d.o.value)
             let sum = values.reduce( (acc, v) => acc + v )
             return sum / arr.length
+            // let sum = values.reduce( (acc, v) => Math.min(acc, v) )
+            // return sum
         })
         return leafletElement
     }

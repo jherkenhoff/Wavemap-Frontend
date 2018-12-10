@@ -18,13 +18,13 @@ const TopCorner = (props) => {
                 <path fill="white" d={`M0,0L${width},0L${width},${height}L${morphPointX},${morphPointY}L0,0`} />
                 <path
                     fill="transparent"
-                    stroke="#7E4B95"
+                    stroke="#333"
                     strokeWidth={1}
                     d={`M${rect? padding:2.5*padding},${padding}L${width-padding},${padding}L${width-padding},${rect? height-padding:height-2.5*padding}L${strokeMorphPointX},${strokeMorphPointY}L${rect? padding:2.5*padding},${padding}`}
                     />
                 <text
                     fontFamily="Droid Sans Mono"
-                    fill="#7E4B95"
+                    fill="#333"
                     textAnchor="middle"
                     transform={`translate(${rect? width/2:width/2+padding+3},${rect? height/2+5:height/2-padding-3})rotate(${rect? 0:45})`}
                     >
