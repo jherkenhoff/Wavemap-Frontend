@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
 import { Segment, Header, Transition, Table, Popup, Divider, Placeholder, Form, Button, Dropdown, Icon, Input, Label, Checkbox } from 'semantic-ui-react'
-import { Brush, ReferenceLine, ReferenceDot, Cell, XAxis, YAxis, ReferenceArea, CartesianGrid, Tooltip, Legend, Area, AreaChart, Bar, BarChart, ResponsiveContainer } from 'recharts';
-import { CollapseableSegment } from "components"
-import InputRange from 'react-input-range'
 import "react-input-range/lib/css/index.css"
 
 import * as styles from './PreprocessorSetup.less'
@@ -39,33 +36,18 @@ class PreprocessorSetup extends Component {
         ]
 
         return (
-            <CollapseableSegment
-                header="Heatmap Preprocessor"
-                icon="code"
-                additional={<Label color="yellow">Average</Label>}>
-                <Dropdown
-                    placeholder="Select preprocessor"
-                    fluid
-                    selection
-                    options={options}
-                    value="AVERAGE"/>
-
-                <ResponsiveContainer width="100%" height={150}>
-                    <BarChart
-                        data={data}
-                        margin={{ top: 30, right: 10, left: -20, bottom: 0 }}>
-                        <XAxis dataKey="mag"/>
-                        <YAxis/>
-                        <Bar dataKey="count">
-                            {
-                                data.map((entry, index) => (
-                                    <Cell fill='#8884d8'/>
-                                ))
-                            }
-                        </Bar>
-                    </BarChart>
-                </ResponsiveContainer>
-            </CollapseableSegment>
+            <div>
+            <Form>
+                <Form.Field>
+                    <label>Preprocessor method</label>
+                    <Dropdown
+                        placeholder="Select preprocessor"
+                        selection
+                        options={options}
+                        value="AVERAGE"/>
+                </Form.Field>
+            </Form>
+            </div>
         )
     }
 }
