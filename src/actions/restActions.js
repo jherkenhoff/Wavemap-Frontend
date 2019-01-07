@@ -3,7 +3,8 @@ import { setMarkerPosition } from "./mapActions"
 
 export const UPDATE_PROGRESS = "UPDATE_PROGRESS"
 
-const restServerDomain = "http://localhost:5000" //"http://dl0ht-2.fk4.hs-bremen.de:33680" //location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+const restServerDomain = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+//const restServerDomain = location.protocol+'//'+location.hostname+(location.port ? ':'+"5000": '');
 
 export function fetchDatasets() {
     return (dispatch) => {

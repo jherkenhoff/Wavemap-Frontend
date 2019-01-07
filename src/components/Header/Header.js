@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Menu, Image, Button, Icon, Label, Step, Loader, Dropdown, Transition, Modal, Popup, Form, Header as SemanticHeader } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { FilterSetup, PreprocessorSetup } from "components"
+import { FilterSetup, PreprocessorSetup, DatasetSetup } from "components"
 import logo from 'resources/logo.svg'
 
 import * as styles from './Header.less'
@@ -31,42 +31,34 @@ class Header extends Component {
                 </Menu.Item>
 
                 <Step.Group className={styles.stepGroup} size="small">
-                    <Dropdown
-                        pointing
-                        icon={null}
+                    <Modal
                         trigger={
-                                <Step link>
-                                    <Icon name='database'/>
-                                    <Step.Content>
-                                        <Step.Title>Dataset</Step.Title>
-                                        <Step.Description>
-                                            Select dataset and subset
-                                        </Step.Description>
-                                    </Step.Content>
-                                </Step>
+                            <Step>
+                                <Icon name='database'/>
+                                <Step.Content>
+                                    <Step.Title>Dataset</Step.Title>
+                                    <Step.Description>
+                                        {datasetSelected? this.props.datasets[selectedDataset].name + "-" + this.props.datasets[selectedDataset].subsets[selectedSubset].name
+                                            : "Select dataset and subset"
+                                        }
+                                    </Step.Description>
+                                </Step.Content>
+                            </Step>
                         }>
-                        <Dropdown.Menu>
-                            <Dropdown.Header>Select Dataset</Dropdown.Header>
-                            {this.props.datasets.map( (dataset) => (
-                                <Dropdown.Item key={dataset.id} active={this.props.setup.selectedDataset == dataset.id}>
-                                    <Dropdown text={dataset.name}>
-                                        <Dropdown.Menu>
-                                            <Dropdown.Header>Select Subset</Dropdown.Header>
-                                            {dataset.subsets.map( (subset) => (
-                                                <Dropdown.Item
-                                                    active={(this.props.setup.selectedDataset == dataset.id) && (this.props.setup.selectedSubset == subset.id)}
-                                                    key={subset.id}
-                                                    text={subset.name}
-                                                    description={subset.length}
-                                                    onClick={ () => this.props.selectDataset(dataset.id, subset.id)}
-                                                    />
-                                            ))}
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Dropdown.Item>
-                            ))}
-                        </Dropdown.Menu>
-                    </Dropdown>
+                        <Modal.Header>Select a Dataset</Modal.Header>
+                        <Modal.Content scrolling>
+                            <DatasetSetup
+                                datasets={this.props.datasets}
+                                setup={this.props.setup}
+                                selectDataset={this.props.selectDataset}
+                                />
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button color='olive'>
+                                <Icon name='checkmark' /> Apply
+                            </Button>
+                        </Modal.Actions>
+                    </Modal>
 
                     <Popup
                         trigger={
@@ -94,6 +86,7 @@ class Header extends Component {
                         on='click'
                         position='bottom center'
                         />
+
                     <Popup
                         trigger={
                             <Step link disabled={!datasetSelected}>
