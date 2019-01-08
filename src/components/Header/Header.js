@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Menu, Image, Button, Icon, Label, Step, Loader, Dropdown, Transition, Modal, Popup, Form, Header as SemanticHeader } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { FilterSetup, PreprocessorSetup, DatasetSetup } from "components"
-import logo from 'resources/logo.svg'
+import logo from 'resources/logo.png'
 
 import * as styles from './Header.less'
 
@@ -27,7 +27,7 @@ class Header extends Component {
         return (
             <Menu size="large" className={styles.header} stackable>
                 <Menu.Item header className={styles.title}>
-                    PJET Visualizer
+		    <Image src={logo} width="150px"/>
                 </Menu.Item>
 
                 <Step.Group className={styles.stepGroup} size="small">
