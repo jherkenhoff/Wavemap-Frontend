@@ -111,7 +111,7 @@ class FilterSetup extends Component {
                                 {(filterEntries.length == 0) && emptyMessage}
                             </Table.Cell>
                             <Table.Cell collapsing textAlign="right">
-                                <Button icon='plus' basic circular color="olive" onClick={() => this.props.handleAddFilter(freqBins.length*0.3, freqBins.length*0.7)}/>
+                                <Button icon='plus' basic circular color="olive" onClick={() => this.props.handleAddFilter(Math.round(freqBins.length*0.3), Math.round(freqBins.length*0.7))}/>
                             </Table.Cell>
                         </Table.Row>
                     </Table.Body>

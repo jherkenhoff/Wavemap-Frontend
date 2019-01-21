@@ -8,6 +8,10 @@ class DatasetSetup extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            selectedDataset: undefined,
+            selectedSubset: undefined
+        }
     }
 
     render() {
@@ -16,29 +20,50 @@ class DatasetSetup extends Component {
 
         return (
             <Card.Group itemsPerRow={3}>
-                { this.props.datasets.map( (dataset) => (
-                    dataset.subsets.map( (subset) => (
-                        <Card link onClick={ () => this.props.selectDataset(dataset.id, subset.id)}>
-                            <Image src={subset.thumbnail}
-                                label={(this.props.setup.selectedDataset == dataset.id) && (this.props.setup.selectedSubset == subset.id)? selectedLabel:undefined}/>
+                { this.props.datasets.map( (dataset) => {
+                    const subsetOptions = dataset.subsets.map( (subset) => ({text: subset.name, value: subset.id}) )
+                    const thumbnail = dataset.subsets[0].thumbnail
+                    return (
+                        <Card onClick={ () => this.props.selectDataset(dataset.id, this.props.setup.selectedDataset == dataset.id? this.props.setup.selectedSubset:0)}>
+                            <Image
+                                src={thumbnail}
+                                className={styles.thumbnail}
+                                label={this.state.selectedDataset == dataset.id? selectedLabel:undefined}/>
                             <Card.Content>
-                                <Card.Header>{dataset.name}</Card.Header>
+                                <Card.Header>
+                                    {dataset.name}
+                                    <Dropdown
+                                        className={styles.subsetDropdown}
+                                        value={this.props.setup.selectedDataset == dataset.id? this.props.setup.selectedSubset:0}
+                                        options={subsetOptions}
+                                        onChange={ (e, {value}) => this.props.selectDataset(dataset.id, value)}/>
+                                </Card.Header>
                                 <Card.Meta>
-                                    {dataset.device.name} ({dataset.device.version})
+                                    Red Pitaya (V1.0)
                                 </Card.Meta>
                                 <Card.Description>
-                                    {formatSiPrefix(subset.freqBins[0])} - {formatSiPrefix(subset.freqBins[subset.freqBins.length-1])} (RBW: {formatSiPrefix(subset.freqBins[1] - subset.freqBins[0])})
+                                    <table>
+                                        <tr>
+                                            <td>Device:</td>
+                                            <td>Red-Pitaya</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Spectrum:</td>
+                                            <td>0 Hz - 30 MHz</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Samples:</td>
+                                            <td>24</td>
+                                        </tr>
+                                    </table>
                                 </Card.Description>
                             </Card.Content>
                             <Card.Content extra>
-                                <a>
-                                    <Icon name='map pin' />
-                                    {subset.length} Locations
-                                </a>
+                                <Icon name="clock"/>19:32 <Icon name="calendar alternate outline"/>21.01.2019
                             </Card.Content>
                         </Card>
-                    ))
-                ))}
+                    )
+                })}
             </Card.Group>
         )
     }

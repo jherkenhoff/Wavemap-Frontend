@@ -101,10 +101,14 @@ class Area extends React.Component {
         }
 
         // scales
-        const xScale = scaleLog({
+        const xScale = scaleLinear({
           range: [0, xMax],
           domain: [extrema.minFreq, extrema.maxFreq]
         });
+        // const xScale = scaleLog({
+        //   range: [0, xMax],
+        //   domain: [extrema.minFreq, extrema.maxFreq]
+        // });
         const plotYScale = scaleLinear({
           range: [plotYMax, 0],
           domain: [extrema.minMag, extrema.maxMag],
