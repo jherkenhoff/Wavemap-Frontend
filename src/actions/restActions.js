@@ -27,7 +27,6 @@ export function fetchData() {
     return (dispatch, getState) => {
         const { selectedDataset, selectedSubset, filters, preprocessor } = getState().newSetup
 
-
         let req = new XMLHttpRequest();
         let url = restServerDomain + "/api/v1/datasets/" + selectedDataset + "/subsets/" + selectedSubset + "/preprocessed?preprocessor=" + preprocessor
         for (var i = 0; i < filters.length; i++) {
